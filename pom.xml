@@ -136,7 +136,6 @@
 						</compilerArgs>
 					</configuration>
 				</plugin>
-
 				<!-- - Maven Jar Plugin - if you want to create and/or sign jars. - I'm
 					putting this in so we can create a jar for the test classes - in components
 					core so that other components' tests can leverage them -->
@@ -214,8 +213,8 @@
 					</configuration>
 				</plugin>
 				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>tomcat-maven-plugin</artifactId>
+					<groupId>org.apache.tomcat.maven</groupId>
+					<artifactId>tomcat7-maven-plugin</artifactId>
 					<version>2.2</version>
 				</plugin>
 				<plugin>
@@ -251,7 +250,6 @@
 					<configuration>
 						<installProject>false</installProject>
 						<verbose>true</verbose>
-
 						<gitFlowConfig>
 							<productionBranch>master</productionBranch>
 							<developmentBranch>develop</developmentBranch>

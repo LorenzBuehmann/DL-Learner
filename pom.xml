@@ -15,7 +15,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!--Define the AKSW dependency version -->
         <slf4j.version>1.7.25</slf4j.version>
-        <log4j.version>2.9.1</log4j.version>
+		<!-- log4j.version>2.9.1</log4j.version -->
+		<log4j.version>1.2.17</log4j.version>
         <solr.version>7.1.0</solr.version>
         <owlapi.version>4.5.0</owlapi.version>
         <spring.version>4.3.3.RELEASE</spring.version>
@@ -264,7 +265,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
-					<version>3.6.0</version>
+					<version>3.7.1</version>
 					<configuration>
 						<!--<skipDeploy>true</skipDeploy> -->
 					</configuration>
@@ -757,11 +758,12 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
-				<version>${slf4j.version}</version>
+ 				<version>${slf4j.version}</version>
 			</dependency>
 
 			<!-- This is the concrete implementation of the log4j framework - it is
 				a runtime dependency that needs to be used with the slf4j-log4j12 dependency -->
+			<!--
 			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
 				<artifactId>log4j-core</artifactId>
@@ -770,6 +772,12 @@
 			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
 				<artifactId>log4j-slf4j-impl</artifactId>
+				<version>${log4j.version}</version>
+			</dependency>
+			-->
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
 				<version>${log4j.version}</version>
 			</dependency>
 

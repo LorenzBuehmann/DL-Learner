@@ -18,7 +18,6 @@
  */
 package org.dllearner.algorithms.el;
 
-import org.apache.log4j.Logger;
 import org.dllearner.core.*;
 import org.dllearner.core.config.ConfigOption;
 import org.dllearner.learningproblems.PosNegLP;
@@ -31,6 +30,8 @@ import org.dllearner.utilities.owl.OWLClassExpressionMinimizer;
 import org.semanticweb.owlapi.manchestersyntax.parser.ManchesterOWLSyntaxParserException;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLIndividual;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -74,7 +75,7 @@ import java.util.*;
 @ComponentAnn(name="Disjunctive ELTL", shortName="deltl", version=0.5, description="Disjunctive ELTL is an algorithm based on the refinement operator in http://jens-lehmann.org/files/2009/el_ilp.pdf with support for disjunctions.")
 public class ELLearningAlgorithmDisjunctive extends AbstractCELA {
 
-	private static Logger logger = Logger.getLogger(ELLearningAlgorithmDisjunctive.class);	
+	private static Logger logger = LoggerFactory.getLogger(ELLearningAlgorithmDisjunctive.class);
 	
 	private ELDown operator;
 	private OWLClassExpressionMinimizer minimizer;

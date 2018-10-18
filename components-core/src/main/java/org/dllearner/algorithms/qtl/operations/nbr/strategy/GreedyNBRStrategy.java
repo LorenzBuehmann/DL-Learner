@@ -18,21 +18,16 @@
  */
 package org.dllearner.algorithms.qtl.operations.nbr.strategy;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
-
-import org.apache.log4j.Logger;
-import org.dllearner.algorithms.qtl.QueryTreeUtils;
-import org.dllearner.algorithms.qtl.datastructures.impl.RDFResourceTree;
-
-import org.apache.jena.graph.Node;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+import org.apache.jena.graph.Node;
+import org.dllearner.algorithms.qtl.QueryTreeUtils;
+import org.dllearner.algorithms.qtl.datastructures.impl.RDFResourceTree;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * 
@@ -41,7 +36,7 @@ import com.jamonapi.MonitorFactory;
  */
 public class GreedyNBRStrategy implements NBRStrategy{
 	
-	private static final Logger logger = Logger.getLogger(GreedyNBRStrategy.class);
+	private static final Logger logger = LoggerFactory.getLogger(GreedyNBRStrategy.class);
 	
 	private int maxEqualEdgesFromRoot = 3;
 	

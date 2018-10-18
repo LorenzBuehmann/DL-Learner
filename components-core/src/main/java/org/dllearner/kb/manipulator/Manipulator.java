@@ -18,19 +18,19 @@
  */
 package org.dllearner.kb.manipulator;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
-
-import org.apache.log4j.Logger;
+import com.jamonapi.Monitor;
 import org.dllearner.kb.extraction.Node;
 import org.dllearner.kb.manipulator.Rule.Months;
 import org.dllearner.kb.manipulator.TypeFilterRule.Nodes;
 import org.dllearner.utilities.JamonMonitorLogger;
 import org.dllearner.utilities.datastructures.RDFNodeTuple;
 import org.dllearner.utilities.owl.OWLVocabulary;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.jamonapi.Monitor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedSet;
 
 /**
  * Used to manipulate retrieved tupels, identify blanknodes, etc.
@@ -41,7 +41,7 @@ import com.jamonapi.Monitor;
 public class Manipulator {
 	
 	@SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(Manipulator.class);
+	private static Logger logger = LoggerFactory.getLogger(Manipulator.class);
 	private List<Rule> rules = new ArrayList<>();
 	
 	private Manipulator() {

@@ -18,17 +18,17 @@
  */
 package org.dllearner.kb.extraction;
 
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.RDFNode;
+import org.dllearner.kb.aquisitors.TupleAquisitor;
+import org.dllearner.kb.manipulator.Manipulator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import org.apache.log4j.Logger;
-import org.dllearner.kb.aquisitors.TupleAquisitor;
-import org.dllearner.kb.manipulator.Manipulator;
-
-import org.apache.jena.rdf.model.Literal;
-import org.apache.jena.rdf.model.RDFNode;
 
 /**
  * A node in the graph that is a Literal.
@@ -41,7 +41,7 @@ public class LiteralNode extends Node {
 	private Literal l;
 	
 	@SuppressWarnings("unused")
-	private static Logger logger = Logger
+	private static Logger logger = LoggerFactory
 		.getLogger(LiteralNode.class);
 
 

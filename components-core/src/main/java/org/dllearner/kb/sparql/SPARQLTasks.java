@@ -18,34 +18,23 @@
  */
 package org.dllearner.kb.sparql;
 
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import org.apache.log4j.Logger;
+import org.apache.jena.query.*;
 import org.dllearner.reasoning.SPARQLReasoner;
 import org.dllearner.utilities.datastructures.RDFNodeTuple;
 import org.dllearner.utilities.datastructures.StringTuple;
 import org.dllearner.utilities.owl.OWLClassExpressionToSPARQLConverter;
 import org.dllearner.utilities.owl.OWLVocabulary;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLDataFactory;
-import org.semanticweb.owlapi.model.OWLDataProperty;
-import org.semanticweb.owlapi.model.OWLEntity;
-import org.semanticweb.owlapi.model.OWLObjectProperty;
+import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.manchester.cs.owl.owlapi.OWLClassImpl;
 import uk.ac.manchester.cs.owl.owlapi.OWLDataFactoryImpl;
 
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.query.ResultSetFactory;
-import org.apache.jena.query.ResultSetFormatter;
-import org.apache.jena.query.ResultSetRewindable;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Convenience class for SPARQL queries initialized
@@ -57,7 +46,7 @@ import org.apache.jena.query.ResultSetRewindable;
  */
 public class SPARQLTasks {
 
-	private static Logger logger = Logger.getLogger(SPARQLTasks.class);
+	private static Logger logger = LoggerFactory.getLogger(SPARQLTasks.class);
 
 	private final Cache cache;
 

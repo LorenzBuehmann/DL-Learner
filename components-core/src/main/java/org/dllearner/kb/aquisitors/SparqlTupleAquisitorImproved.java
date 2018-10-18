@@ -18,21 +18,17 @@
  */
 package org.dllearner.kb.aquisitors;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import org.apache.log4j.Logger;
-import org.dllearner.kb.sparql.SPARQLTasks;
-import org.dllearner.kb.sparql.SparqlQueryMaker;
-import org.dllearner.utilities.datastructures.RDFNodeTuple;
-
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.query.ResultSetRewindable;
 import org.apache.jena.rdf.model.RDFNode;
+import org.dllearner.kb.sparql.SPARQLTasks;
+import org.dllearner.kb.sparql.SparqlQueryMaker;
+import org.dllearner.utilities.datastructures.RDFNodeTuple;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 /**
  * Can execute different queries.
@@ -42,7 +38,7 @@ import org.apache.jena.rdf.model.RDFNode;
  */
 public class SparqlTupleAquisitorImproved extends SparqlTupleAquisitor {
 	
-	private static Logger logger = Logger.getLogger(SparqlTupleAquisitorImproved.class);
+	private static Logger logger = LoggerFactory.getLogger(SparqlTupleAquisitorImproved.class);
 	private Map<String,SortedSet<RDFNodeTuple>> resources = new HashMap<>();
 	int recursionDepth;
 	

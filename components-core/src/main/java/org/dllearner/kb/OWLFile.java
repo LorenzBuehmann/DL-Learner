@@ -19,7 +19,6 @@
 package org.dllearner.kb;
 
 import org.apache.jena.ontology.OntModelSpec;
-import org.apache.log4j.Logger;
 import org.dllearner.core.AbstractKnowledgeSource;
 import org.dllearner.core.ComponentAnn;
 import org.dllearner.core.ComponentInitException;
@@ -30,6 +29,8 @@ import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -49,7 +50,7 @@ import java.util.List;
 @ComponentAnn(name = "OWL File", shortName = "owlfile", version = 0.9)
 public class OWLFile extends AbstractKnowledgeSource implements OWLOntologyKnowledgeSource {
 
-    private static Logger logger = Logger.getLogger(OWLFile.class);
+    private static Logger logger = LoggerFactory.getLogger(OWLFile.class);
 
     // TODO: turn this into a config option
     @ConfigOption(description = "URL pointer to the KB file or Endpoint")

@@ -18,7 +18,6 @@
  */
 package org.dllearner.refinementoperators;
 
-import org.apache.log4j.Logger;
 import org.dllearner.algorithms.el.*;
 import org.dllearner.core.AbstractReasonerComponent;
 import org.dllearner.core.ComponentInitException;
@@ -27,6 +26,8 @@ import org.dllearner.core.owl.ClassHierarchy;
 import org.dllearner.core.owl.DatatypePropertyHierarchy;
 import org.dllearner.core.owl.ObjectPropertyHierarchy;
 import org.semanticweb.owlapi.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.manchester.cs.owl.owlapi.OWLDataFactoryImpl;
 
 import java.util.*;
@@ -56,7 +57,7 @@ import java.util.*;
 //@ComponentAnn(name = "EL Downward refinement operator", shortName = "eldown", version = 0.1)
 public class ELDown extends RefinementOperatorAdapter {
 
-	private static Logger logger = Logger.getLogger(ELDown.class);	
+	private static Logger logger = LoggerFactory.getLogger(ELDown.class);
 	
 	private AbstractReasonerComponent rs;
 	

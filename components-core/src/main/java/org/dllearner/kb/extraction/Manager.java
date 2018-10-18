@@ -18,21 +18,16 @@
  */
 package org.dllearner.kb.extraction;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import javax.swing.ProgressMonitor;
-
-import org.apache.log4j.Logger;
+import com.jamonapi.Monitor;
 import org.dllearner.utilities.JamonMonitorLogger;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.jamonapi.Monitor;
+import javax.swing.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
 
 /**
  * An object of this class encapsulates everything.
@@ -50,7 +45,7 @@ public class Manager {
 	
 	private ProgressMonitor mon;
 	
-	private static Logger logger = Logger
+	private static Logger logger = LoggerFactory
 		.getLogger(Manager.class);
 	
 	

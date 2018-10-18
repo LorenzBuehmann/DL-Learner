@@ -37,7 +37,9 @@ package org.dllearner.utilities.statistics;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class for counting time and outputting it.
@@ -46,7 +48,7 @@ import org.apache.log4j.Logger;
  */
 public class SimpleClock {
 
-	private static Logger logger = Logger.getLogger(SimpleClock.class);
+	private static Logger logger = LoggerFactory.getLogger(SimpleClock.class);
 
 	private long time;
 

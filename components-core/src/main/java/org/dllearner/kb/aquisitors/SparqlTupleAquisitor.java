@@ -18,23 +18,19 @@
  */
 package org.dllearner.kb.aquisitors;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-
-import org.apache.log4j.Logger;
+import com.jamonapi.Monitor;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSetRewindable;
+import org.apache.jena.rdf.model.RDFNode;
 import org.dllearner.kb.sparql.SPARQLTasks;
 import org.dllearner.kb.sparql.SparqlQueryMaker;
 import org.dllearner.utilities.JamonMonitorLogger;
 import org.dllearner.utilities.datastructures.RDFNodeTuple;
 import org.dllearner.utilities.owl.OWLVocabulary;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSetRewindable;
-import org.apache.jena.rdf.model.RDFNode;
-import com.jamonapi.Monitor;
+import java.util.*;
 
 /**
  * Can execute different queries.
@@ -45,7 +41,7 @@ import com.jamonapi.Monitor;
 public class SparqlTupleAquisitor extends TupleAquisitor {
 	
 	
-	private static Logger logger = Logger.getLogger(SparqlTupleAquisitor.class);
+	private static Logger logger = LoggerFactory.getLogger(SparqlTupleAquisitor.class);
 	protected static final String PREDICATE = "predicate";
 	protected static final String OBJECT = "object";
 	

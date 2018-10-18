@@ -18,19 +18,20 @@
  */
 package org.dllearner.utilities.examples;
 
+import org.dllearner.kb.sparql.SPARQLTasks;
+import org.dllearner.utilities.datastructures.SetManipulation;
+import org.dllearner.utilities.owl.OWLVocabulary;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.log4j.Logger;
-import org.dllearner.kb.sparql.SPARQLTasks;
-import org.dllearner.utilities.datastructures.SetManipulation;
-import org.dllearner.utilities.owl.OWLVocabulary;
-
 public class AutomaticNegativeExampleFinderSPARQL {
 
 	// LOGGER: ComponentManager
-	private static Logger logger = Logger.getLogger(AutomaticNegativeExampleFinderSPARQL.class);
+	private static Logger logger = LoggerFactory.getLogger(AutomaticNegativeExampleFinderSPARQL.class);
 
 	private SPARQLTasks sparqltasks;
 

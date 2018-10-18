@@ -18,6 +18,14 @@
  */
 package org.dllearner.kb.repository.oxford;
 
+import org.dllearner.kb.repository.OntologyRepository;
+import org.dllearner.kb.repository.OntologyRepositoryEntry;
+import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.util.OntologyIRIShortFormProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.URI;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -25,16 +33,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-import org.dllearner.kb.repository.OntologyRepository;
-import org.dllearner.kb.repository.OntologyRepositoryEntry;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.util.OntologyIRIShortFormProvider;
-
 public class OxfordRepository implements OntologyRepository{
 	
-	private static final Logger log = Logger.getLogger(OxfordRepository.class);
+	private static final Logger log = LoggerFactory.getLogger(OxfordRepository.class);
 	
 	private final String repositoryName = "Oxford";
 

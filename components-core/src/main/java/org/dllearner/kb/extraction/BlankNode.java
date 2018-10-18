@@ -18,7 +18,6 @@
  */
 package org.dllearner.kb.extraction;
 
-import org.apache.log4j.Logger;
 import org.dllearner.kb.aquisitors.RDFBlankNode;
 import org.dllearner.kb.aquisitors.TupleAquisitor;
 import org.dllearner.kb.manipulator.Manipulator;
@@ -29,11 +28,13 @@ import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class BlankNode extends Node {
-	private static Logger logger = Logger
+	private static Logger logger = LoggerFactory
 	.getLogger(BlankNode.class);
 	
 	RDFBlankNode bNode;
@@ -221,7 +222,7 @@ public class BlankNode extends Node {
 	}
 	
 	public void printAll(){
-		logger.debug(this);
+		logger.debug("{}", this);
 		
 		logger.debug("otherNodes");
 		for (StringTuple t : otherNodes) {
@@ -235,7 +236,7 @@ public class BlankNode extends Node {
 		logger.debug("***************");
 		logger.debug("other bnodes");
 		for (BlankNode b : blankNodes) {
-			logger.debug(b);
+			logger.debug("{}", b);
 		}
 		logger.debug("***************");
 		

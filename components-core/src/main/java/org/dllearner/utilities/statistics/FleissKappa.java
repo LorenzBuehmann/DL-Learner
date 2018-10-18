@@ -18,8 +18,9 @@
  */
 package org.dllearner.utilities.statistics;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
@@ -30,14 +31,13 @@ import java.util.Arrays;
  */
 public class FleissKappa
 {
-    private static Logger logger = Logger.getLogger(FleissKappa.class);
+    private static Logger logger = LoggerFactory.getLogger(FleissKappa.class);
  
     /**
      * Example from Wikipedia article
      */
     public static void main(String[] args)
     {
-    	Logger.getRootLogger().setLevel(Level.DEBUG);
         short[][] mat = new short[][]
         {
             {0,0,0,0,14},

@@ -18,27 +18,20 @@
  */
 package org.dllearner.kb.extraction;
 
+import org.apache.jena.rdf.model.Literal;
+import org.dllearner.kb.aquisitors.TupleAquisitor;
+import org.dllearner.kb.manipulator.Manipulator;
+import org.dllearner.utilities.datastructures.RDFNodeTuple;
+import org.dllearner.utilities.owl.OWLVocabulary;
+import org.semanticweb.owlapi.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import org.apache.log4j.Logger;
-import org.dllearner.kb.aquisitors.TupleAquisitor;
-import org.dllearner.kb.manipulator.Manipulator;
-import org.dllearner.utilities.datastructures.RDFNodeTuple;
-import org.dllearner.utilities.owl.OWLVocabulary;
-import org.semanticweb.owlapi.model.OWLAnnotation;
-import org.semanticweb.owlapi.model.OWLAxiom;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLDataFactory;
-import org.semanticweb.owlapi.model.OWLDataProperty;
-import org.semanticweb.owlapi.model.OWLIndividual;
-import org.semanticweb.owlapi.model.OWLNamedIndividual;
-import org.semanticweb.owlapi.model.OWLObjectProperty;
-
-import org.apache.jena.rdf.model.Literal;
 
 /**
  * A node in the graph that is an instance.
@@ -48,7 +41,7 @@ import org.apache.jena.rdf.model.Literal;
  */
 public class InstanceNode extends Node {
 	
-	private static Logger logger = Logger
+	private static Logger logger = LoggerFactory
 		.getLogger(InstanceNode.class);
 
 	private List<ClassNode> classes = new ArrayList<>();

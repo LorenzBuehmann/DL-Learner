@@ -20,7 +20,6 @@ package org.dllearner.algorithms.el;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
-import org.apache.log4j.Logger;
 import org.dllearner.core.*;
 import org.dllearner.core.config.ConfigOption;
 import org.dllearner.core.owl.ClassHierarchy;
@@ -37,6 +36,8 @@ import org.dllearner.utilities.owl.OWLClassExpressionUtils;
 import org.semanticweb.owlapi.manchestersyntax.parser.ManchesterOWLSyntaxParserException;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.List;
@@ -55,7 +56,7 @@ import java.util.TreeSet;
 @ComponentAnn(name="ELTL", shortName="eltl", version=0.5, description="ELTL is an algorithm based on the refinement operator in http://jens-lehmann.org/files/2009/el_ilp.pdf.")
 public class ELLearningAlgorithm extends AbstractCELA {
 
-	private static Logger logger = Logger.getLogger(ELLearningAlgorithm.class);	
+	private static Logger logger = LoggerFactory.getLogger(ELLearningAlgorithm.class);
 	
 	@ConfigOption(required=false, defaultValue="true", description="Specifies whether to use real disjointness checks or instance based ones (no common instances) in the refinement operator.")
 	private boolean instanceBasedDisjoints = true;

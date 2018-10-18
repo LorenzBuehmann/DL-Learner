@@ -18,20 +18,21 @@
  */
 package org.dllearner.accuracymethods;
 
-import org.apache.log4j.Logger;
 import org.dllearner.core.ComponentAnn;
 import org.dllearner.core.Reasoner;
 import org.dllearner.core.config.ConfigOption;
 import org.dllearner.learningproblems.Heuristics;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLIndividual;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Iterator;
 
 @ComponentAnn(name = "Predictive Accuracy Approximate", shortName = "approx.prec_acc", version = 0)
 public class AccMethodPredAccApprox extends AccMethodPredAcc implements AccMethodTwoValuedApproximate {
-	final static Logger logger = Logger.getLogger(AccMethodPredAccApprox.class);
+	final static Logger logger = LoggerFactory.getLogger(AccMethodPredAccApprox.class);
 	@Override
 	public void init() {
 		logger.warn("Approximating predictive accuracy is an experimental feature. USE IT AT YOUR OWN RISK. If you consider to use it for anything serious, please extend the unit tests at org.dllearner.test.junit.HeuristicTests first and verify that it works.");

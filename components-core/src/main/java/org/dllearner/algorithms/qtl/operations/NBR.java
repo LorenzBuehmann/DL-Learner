@@ -18,32 +18,25 @@
  */
 package org.dllearner.algorithms.qtl.operations;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.concurrent.TimeUnit;
-
-import javax.xml.ws.http.HTTPException;
-
-import org.apache.jena.graph.NodeFactory;
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
 import org.aksw.jena_sparql_api.cache.core.QueryExecutionFactoryCacheEx;
 import org.aksw.jena_sparql_api.cache.extra.CacheFrontend;
 import org.aksw.jena_sparql_api.cache.h2.CacheUtilsH2;
 import org.aksw.jena_sparql_api.http.QueryExecutionFactoryHttp;
 import org.aksw.jena_sparql_api.model.QueryExecutionFactoryModel;
-import org.apache.log4j.Logger;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.query.*;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
+import org.apache.jena.sparql.expr.E_Equals;
+import org.apache.jena.sparql.expr.E_LogicalNot;
+import org.apache.jena.sparql.expr.ExprVar;
+import org.apache.jena.sparql.expr.nodevalue.NodeValueNode;
+import org.apache.jena.sparql.syntax.*;
+import org.apache.jena.vocabulary.RDF;
 import org.dllearner.algorithms.qtl.datastructures.QueryTree;
 import org.dllearner.algorithms.qtl.datastructures.impl.GeneralisedQueryTree;
 import org.dllearner.algorithms.qtl.datastructures.impl.QueryTreeChange;
@@ -53,29 +46,13 @@ import org.dllearner.algorithms.qtl.exception.TimeOutException;
 import org.dllearner.algorithms.qtl.util.SPARQLEndpointEx;
 import org.dllearner.algorithms.qtl.util.TreeHelper;
 import org.dllearner.kb.sparql.SparqlEndpoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QueryFactory;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
-import org.apache.jena.sparql.expr.E_Equals;
-import org.apache.jena.sparql.expr.E_LogicalNot;
-import org.apache.jena.sparql.expr.ExprVar;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueNode;
-import org.apache.jena.sparql.syntax.Element;
-import org.apache.jena.sparql.syntax.ElementFilter;
-import org.apache.jena.sparql.syntax.ElementGroup;
-import org.apache.jena.sparql.syntax.ElementOptional;
-import org.apache.jena.sparql.syntax.ElementTriplesBlock;
-import org.apache.jena.vocabulary.RDF;
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
+import javax.xml.ws.http.HTTPException;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 public class NBR<N> {
 	
@@ -108,7 +85,7 @@ public class NBR<N> {
 	
 	private Monitor mon = MonitorFactory.getTimeMonitor("NBR");
 	
-	private static final Logger logger = Logger.getLogger(NBR.class);
+	private static final Logger logger = LoggerFactory.getLogger(NBR.class);
 	
 	public NBR(SparqlEndpoint endpoint){
 		this(endpoint, null);

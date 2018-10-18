@@ -18,20 +18,21 @@
  */
 package org.dllearner.kb.manipulator;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import org.apache.log4j.Logger;
 import org.dllearner.kb.extraction.ClassNode;
 import org.dllearner.kb.extraction.InstanceNode;
 import org.dllearner.kb.extraction.LiteralNode;
 import org.dllearner.kb.extraction.Node;
 import org.dllearner.utilities.JamonMonitorLogger;
 import org.dllearner.utilities.datastructures.RDFNodeTuple;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class TypeFilterRule extends Rule{
 	
-	public static Logger logger = Logger.getLogger(TypeFilterRule.class);
+	public static Logger logger = LoggerFactory.getLogger(TypeFilterRule.class);
 	
 	private String predicateFilter;
 	private String objectFilter;

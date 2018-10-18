@@ -18,14 +18,14 @@
  */
 package org.dllearner.kb.extraction;
 
-import java.util.List;
-import java.util.SortedSet;
-
-import org.apache.log4j.Logger;
 import org.dllearner.kb.aquisitors.TupleAquisitor;
 import org.dllearner.kb.manipulator.Manipulator;
 import org.semanticweb.owlapi.model.IRI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.List;
+import java.util.SortedSet;
 
 
 /**
@@ -35,7 +35,7 @@ import org.semanticweb.owlapi.model.IRI;
  * 
  */
 public abstract class Node  {
-	private static Logger logger = Logger
+	private static Logger logger = LoggerFactory
 	.getLogger(Node.class);
 	
 	// make sure no information is missed during the transition to OWLAPI

@@ -18,12 +18,13 @@
  */
 package org.dllearner.kb.aquisitors;
 
+import org.dllearner.utilities.datastructures.RDFNodeTuple;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.URI;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import org.apache.log4j.Logger;
-import org.dllearner.utilities.datastructures.RDFNodeTuple;
 
 /**
  * 
@@ -37,7 +38,7 @@ import org.dllearner.utilities.datastructures.RDFNodeTuple;
 public abstract class TupleAquisitor {
 	
 
-	private static Logger logger = Logger.getLogger(TupleAquisitor.class);
+	private static Logger logger = LoggerFactory.getLogger(TupleAquisitor.class);
 	protected final int NORMAL = 0;
 	protected final int CLASSES_FOR_INSTANCES = 1;
 	protected final int CLASS_INFORMATION = 2;

@@ -18,22 +18,19 @@
  */
 package org.dllearner.kb.extraction;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import org.apache.log4j.Logger;
 import org.dllearner.kb.aquisitors.RDFBlankNode;
 import org.dllearner.kb.aquisitors.TupleAquisitor;
 import org.dllearner.kb.manipulator.Manipulator;
 import org.dllearner.utilities.datastructures.RDFNodeTuple;
 import org.dllearner.utilities.owl.OWLVocabulary;
-import org.semanticweb.owlapi.model.OWLAnnotation;
-import org.semanticweb.owlapi.model.OWLAxiom;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLClassExpression;
-import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Is a node in the graph, that is a class.
@@ -42,7 +39,7 @@ import org.semanticweb.owlapi.model.OWLDataFactory;
  */
 public class ClassNode extends Node {
 	
-	private static Logger logger = Logger
+	private static Logger logger = LoggerFactory
 		.getLogger(ClassNode.class);
 	
 	List<ObjectPropertyNode> classProperties = new ArrayList<>();

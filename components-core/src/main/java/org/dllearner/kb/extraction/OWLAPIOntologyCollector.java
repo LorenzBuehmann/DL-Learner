@@ -18,16 +18,17 @@
  */
 package org.dllearner.kb.extraction;
 
-import org.apache.log4j.Logger;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.util.SimpleIRIMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
 public class OWLAPIOntologyCollector {
 	
-	private static Logger logger = Logger.getLogger(OWLAPIOntologyCollector.class);
+	private static Logger logger = LoggerFactory.getLogger(OWLAPIOntologyCollector.class);
 	 
 	private OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 	private OWLDataFactory factory;

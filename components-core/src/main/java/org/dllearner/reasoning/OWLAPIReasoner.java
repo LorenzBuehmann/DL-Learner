@@ -21,8 +21,6 @@ package org.dllearner.reasoning;
 import com.clarkparsia.owlapi.explanation.PelletExplanation;
 import com.clarkparsia.owlapiv3.XSD;
 import com.clarkparsia.pellet.owlapiv3.PelletReasonerFactory;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.dllearner.core.*;
 import org.dllearner.core.annotations.NoConfigOption;
 import org.dllearner.core.annotations.OutVariable;
@@ -276,8 +274,8 @@ public class OWLAPIReasoner extends AbstractReasonerComponent {
 			reasonerFactory = PelletReasonerFactory.getInstance();
 			// change log level to WARN for Pellet, because otherwise log
 			// output will be very large
-			Logger pelletLogger = Logger.getLogger("org.mindswap.pellet");
-			pelletLogger.setLevel(Level.WARN);
+			//Logger pelletLogger = Logger.getLogger("org.mindswap.pellet");
+			//pelletLogger.setLevel(Level.WARN);
 			break;
 		case JFACT:
 			reasonerFactory = new JFactFactory();

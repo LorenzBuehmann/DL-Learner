@@ -19,12 +19,13 @@
 package org.dllearner.learningproblems;
 
 import com.google.common.collect.Sets;
-import org.apache.log4j.Logger;
 import org.dllearner.core.*;
 import org.dllearner.core.config.ConfigOption;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -37,7 +38,7 @@ import java.util.*;
 @ComponentAnn(name = "positive only learning problem", shortName = "posonlylp", version = 0.6)
 public class PosOnlyLP extends AbstractClassExpressionLearningProblem<ScorePosOnly<OWLNamedIndividual>> {
 
-	private static Logger logger = Logger.getLogger(PosOnlyLP.class);
+	private static Logger logger = LoggerFactory.getLogger(PosOnlyLP.class);
     private long nanoStartTime;
 
 	@ConfigOption(description = "the positive examples", required = true)

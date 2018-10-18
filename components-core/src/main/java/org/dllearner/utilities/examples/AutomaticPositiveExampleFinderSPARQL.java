@@ -18,16 +18,17 @@
  */
 package org.dllearner.utilities.examples;
 
+import org.dllearner.kb.sparql.SPARQLTasks;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import org.apache.log4j.Logger;
-import org.dllearner.kb.sparql.SPARQLTasks;
 
 public class AutomaticPositiveExampleFinderSPARQL {
 	
 	// LOGGER
-	private static Logger logger = Logger
+	private static Logger logger = LoggerFactory
 	.getLogger(AutomaticPositiveExampleFinderSPARQL.class);
 
 	

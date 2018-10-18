@@ -18,7 +18,6 @@
  */
 package org.dllearner.kb;
 
-import org.apache.log4j.Logger;
 import org.dllearner.core.AbstractKnowledgeSource;
 import org.dllearner.core.ComponentAnn;
 import org.dllearner.core.ComponentInitException;
@@ -28,6 +27,8 @@ import org.dllearner.parser.ParseException;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -47,7 +48,7 @@ import java.nio.file.Paths;
 @ComponentAnn(name = "KB File", shortName = "kbfile", version = 0.8)
 public class KBFile extends AbstractKnowledgeSource implements OWLOntologyKnowledgeSource {
 
-    private static Logger logger = Logger.getLogger(KBFile.class);
+    private static Logger logger = LoggerFactory.getLogger(KBFile.class);
 
     private OWLOntology kb;
 

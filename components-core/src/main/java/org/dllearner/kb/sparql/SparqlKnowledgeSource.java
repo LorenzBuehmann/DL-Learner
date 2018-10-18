@@ -20,7 +20,6 @@ package org.dllearner.kb.sparql;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
-import org.apache.log4j.Logger;
 import org.dllearner.core.AbstractKnowledgeSource;
 import org.dllearner.core.ComponentAnn;
 import org.dllearner.kb.OWLOntologyKnowledgeSource;
@@ -42,6 +41,8 @@ import org.dllearner.utilities.owl.SimpleOntologyToByteConverter;
 import org.dllearner.utilities.statistics.SimpleClock;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.io.File;
@@ -138,7 +139,7 @@ public class SparqlKnowledgeSource extends AbstractKnowledgeSource implements OW
 
 	private List<StringTuple> replaceObject  = new LinkedList<>();
 
-	private static Logger logger = Logger
+	private static Logger logger = LoggerFactory
 			.getLogger(SparqlKnowledgeSource.class);
 
 	/*
@@ -154,8 +155,8 @@ public class SparqlKnowledgeSource extends AbstractKnowledgeSource implements OW
 		if(mon != null){
 			mon.setNote("Collecting Ontology");
 		}
-		logger.trace(getURL());
-		logger.trace(getSparqlEndpoint());
+		logger.trace("{}", getURL());
+		logger.trace("{}", getSparqlEndpoint());
 //		logger.trace(configurator.getInstances());
 		Manager m = new Manager();
 		m.addProgressMonitor(mon);

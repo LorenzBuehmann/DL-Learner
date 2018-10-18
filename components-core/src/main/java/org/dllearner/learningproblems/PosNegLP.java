@@ -20,7 +20,6 @@ package org.dllearner.learningproblems;
 
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
-import org.apache.log4j.Logger;
 import org.dllearner.accuracymethods.AccMethodApproximate;
 import org.dllearner.accuracymethods.AccMethodPredAcc;
 import org.dllearner.accuracymethods.AccMethodTwoValued;
@@ -31,6 +30,8 @@ import org.dllearner.core.config.ConfigOption;
 import org.dllearner.reasoning.SPARQLReasoner;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Set;
@@ -41,7 +42,7 @@ import java.util.TreeSet;
  *
  */
 public abstract class PosNegLP extends AbstractClassExpressionLearningProblem<ScorePosNeg<OWLNamedIndividual>> {
-	protected static final Logger logger = Logger.getLogger(PosNegLP.class);
+	protected static final Logger logger = LoggerFactory.getLogger(PosNegLP.class);
 
 	@ConfigOption(description = "list of positive examples", required = true)
 	protected Set<OWLIndividual> positiveExamples = new TreeSet<>();

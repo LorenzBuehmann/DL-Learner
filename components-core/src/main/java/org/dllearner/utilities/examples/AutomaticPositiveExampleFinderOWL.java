@@ -18,18 +18,19 @@
  */
 package org.dllearner.utilities.examples;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import org.apache.log4j.Logger;
 import org.dllearner.core.AbstractReasonerComponent;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLIndividual;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class AutomaticPositiveExampleFinderOWL {
 	
 	// LOGGER: ComponentManager
-	private static Logger logger = Logger
+	private static Logger logger = LoggerFactory
 		.getLogger(AutomaticPositiveExampleFinderOWL.class);
 
 	

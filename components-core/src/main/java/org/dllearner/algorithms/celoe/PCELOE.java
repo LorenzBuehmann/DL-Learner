@@ -21,10 +21,6 @@ package org.dllearner.algorithms.celoe;
 import com.google.common.collect.Sets;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 import org.dllearner.core.*;
 import org.dllearner.core.config.ConfigOption;
 import org.dllearner.core.owl.ClassHierarchy;
@@ -45,6 +41,8 @@ import org.dllearner.utilities.TreeUtils;
 import org.dllearner.utilities.datastructures.SynchronizedSearchTree;
 import org.dllearner.utilities.owl.*;
 import org.semanticweb.owlapi.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.manchester.cs.owl.owlapi.OWLClassImpl;
 
@@ -64,7 +62,7 @@ import java.util.concurrent.Future;
 @ComponentAnn(name="PCELOE", shortName="pceloe", version=1.0, description="PCELOE is an experimental, parallel implementation of the CELOE algorithm.")
 public class PCELOE extends AbstractCELA {
 
-	private static Logger logger = Logger.getLogger(PCELOE.class);
+	private static Logger logger = LoggerFactory.getLogger(PCELOE.class);
 
 	private boolean isRunning = false;
 	private boolean stop = false;
@@ -1174,9 +1172,6 @@ public class PCELOE extends AbstractCELA {
 
 	public static void main(String[] args) throws Exception{
 //		StringRenderer.setRenderer(Rendering.DL_SYNTAX);
-		Logger.getRootLogger().setLevel(Level.INFO);
-		Logger.getLogger(PCELOE.class).setLevel(Level.DEBUG);
-		Logger.getLogger(PCELOE.class).addAppender(new FileAppender(new PatternLayout( "[%t] %c: %m%n" ), "log/parallel_run.txt", false));
 
 		AbstractKnowledgeSource ks = new OWLFile("../examples/family/father_oe.owl");
 		ks.init();

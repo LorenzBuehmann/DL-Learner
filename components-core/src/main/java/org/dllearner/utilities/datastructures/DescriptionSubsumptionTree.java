@@ -18,14 +18,14 @@
  */
 package org.dllearner.utilities.datastructures;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.dllearner.core.AbstractReasonerComponent;
 import org.dllearner.core.EvaluatedDescription;
 import org.dllearner.core.Score;
 import org.dllearner.learningproblems.EvaluatedDescriptionPosNeg;
 import org.dllearner.utilities.owl.OWLClassExpressionUtils;
 import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -37,7 +37,7 @@ import java.util.*;
  *
  */
 public class DescriptionSubsumptionTree {
-	private static final Logger logger = Logger.getLogger(DescriptionSubsumptionTree.class);
+	private static final Logger logger = LoggerFactory.getLogger(DescriptionSubsumptionTree.class);
 	/**
 	 * turns on logging
 	 */
@@ -242,7 +242,7 @@ public class DescriptionSubsumptionTree {
 	 */
 	public DescriptionSubsumptionTree(AbstractReasonerComponent rc) {
 		logger.trace("Output for DescriptionSubsumptionTree deactivated (in class)");
-		logger.setLevel((debug) ? Level.WARN : Level.OFF);
+		//logger.setLevel((debug) ? Level.WARN : Level.OFF);
 		this.rc = rc;
 		this.rootNode = new Node(null,true);
 	}
@@ -281,7 +281,7 @@ public class DescriptionSubsumptionTree {
 			}
 			if (evaluatedDescription.getAccuracy() > accuracyThreshold) {
 				newSet.add(evaluatedDescription);
-				logger.warn(evaluatedDescription);
+				logger.warn("{}", evaluatedDescription);
 			}
 			i++;
 		}

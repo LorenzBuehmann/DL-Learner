@@ -19,9 +19,10 @@
 package org.dllearner.kb.sparql;
 
 import com.jamonapi.Monitor;
-import org.apache.log4j.Logger;
 import org.dllearner.utilities.Files;
 import org.dllearner.utilities.JamonMonitorLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.security.MessageDigest;
@@ -53,7 +54,7 @@ import java.util.LinkedList;
  */
 public class Cache implements Serializable {
 
-	private static Logger logger = Logger.getLogger(Cache.class);
+	private static Logger logger = LoggerFactory.getLogger(Cache.class);
 	
 	// true = H2 embedded database is used; false = stored in files
 	private boolean useDatabase = false;

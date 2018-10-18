@@ -18,6 +18,15 @@
  */
 package org.dllearner.kb.repository.tones;
 
+import org.dllearner.kb.repository.OntologyRepository;
+import org.dllearner.kb.repository.OntologyRepositoryEntry;
+import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyIRIMapper;
+import org.semanticweb.owlapi.util.OntologyIRIShortFormProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -28,17 +37,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-import org.dllearner.kb.repository.OntologyRepository;
-import org.dllearner.kb.repository.OntologyRepositoryEntry;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyIRIMapper;
-import org.semanticweb.owlapi.util.OntologyIRIShortFormProvider;
-
 public class TONESRepository implements OntologyRepository{
 	
-	private static final Logger log = Logger.getLogger(TONESRepository.class);
+	private static final Logger log = LoggerFactory.getLogger(TONESRepository.class);
 	
 	private final String repositoryName = "TONES";
 

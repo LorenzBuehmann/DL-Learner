@@ -18,22 +18,23 @@
  */
 package org.dllearner.utilities.examples;
 
-import java.util.Collection;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import org.apache.log4j.Logger;
 import org.dllearner.core.AbstractReasonerComponent;
 import org.dllearner.utilities.datastructures.SetManipulation;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class AutomaticNegativeExampleFinderOWL {
 
 	// LOGGER
-	private static Logger logger = Logger.getLogger(AutomaticNegativeExampleFinderOWL.class);
+	private static Logger logger = LoggerFactory.getLogger(AutomaticNegativeExampleFinderOWL.class);
 
 	private AbstractReasonerComponent reasoningService;
 	
@@ -190,7 +191,7 @@ public class AutomaticNegativeExampleFinderOWL {
 		}
 		logger.debug("getting negExamples from " + classes.size() + " parallel classes");
 		for (OWLClassExpression oneClass : classes) {
-			logger.debug(oneClass);
+			logger.debug("{}", oneClass);
 			// rsc = new
 			// JenaResultSetConvenience(queryConcept("\""+oneClass+"\"",limit));
 			try{
@@ -231,7 +232,7 @@ public class AutomaticNegativeExampleFinderOWL {
 		logger.debug("making neg Examples from " + superClasses.size() + " superclasses");
 
 		for (OWLClassExpression oneSuperClass : superClasses) {
-			logger.debug(oneSuperClass);
+			logger.debug("{}", oneSuperClass);
 			fromSuperclasses.addAll(reasoningService.getIndividuals(oneSuperClass));
 		}
 		this.fromSuperclasses.removeAll(fullPositiveSet);

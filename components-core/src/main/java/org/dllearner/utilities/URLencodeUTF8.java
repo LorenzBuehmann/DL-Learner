@@ -18,14 +18,16 @@
  */
 package org.dllearner.utilities;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import org.apache.log4j.Logger;
 
 public class URLencodeUTF8 {
 
-	public static Logger logger = Logger.getLogger(URLencodeUTF8.class);
+	public static Logger logger = LoggerFactory.getLogger(URLencodeUTF8.class);
 
 	public static String encode(String toEncode) {
 		String retVal = "";

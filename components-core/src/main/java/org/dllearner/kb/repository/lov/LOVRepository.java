@@ -23,7 +23,6 @@ import org.aksw.jena_sparql_api.http.QueryExecutionFactoryHttp;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
-import org.apache.log4j.Logger;
 import org.dllearner.kb.repository.OntologyRepository;
 import org.dllearner.kb.repository.OntologyRepositoryEntry;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -32,6 +31,8 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyIRIMapper;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.util.OntologyIRIShortFormProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ import java.util.List;
 
 public class LOVRepository implements OntologyRepository{
 
-	private static final Logger log = Logger.getLogger(LOVRepository.class);
+	private static final Logger log = LoggerFactory.getLogger(LOVRepository.class);
 
 	private final String repositoryName = "LOV";
 

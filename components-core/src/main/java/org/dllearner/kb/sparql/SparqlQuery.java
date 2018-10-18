@@ -18,25 +18,20 @@
  */
 package org.dllearner.kb.sparql;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-
-import javax.xml.ws.http.HTTPException;
-
-import org.apache.log4j.Logger;
-import org.dllearner.utilities.Files;
-import org.dllearner.utilities.JamonMonitorLogger;
-
+import com.jamonapi.Monitor;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.query.ResultSetFactory;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.query.ResultSetRewindable;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
-import com.jamonapi.Monitor;
+import org.dllearner.utilities.Files;
+import org.dllearner.utilities.JamonMonitorLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.xml.ws.http.HTTPException;
+import java.io.*;
+import java.nio.charset.Charset;
 
 /**
  * Represents one SPARQL query. It includes support for stopping the SPARQL
@@ -51,7 +46,7 @@ public class SparqlQuery {
 
 	private static boolean logDeletedOnStart = false;
 
-	private static Logger logger = Logger.getLogger(SparqlQuery.class);
+	private static Logger logger = LoggerFactory.getLogger(SparqlQuery.class);
 	
 	// additional file for logging SPARQL queries etc.
 	private static String sparqlLog = "log/sparql.txt";

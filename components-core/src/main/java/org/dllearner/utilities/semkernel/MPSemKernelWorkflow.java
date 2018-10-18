@@ -18,37 +18,21 @@
  */
 package org.dllearner.utilities.semkernel;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.*;
-
-import org.apache.log4j.Logger;
+import com.google.common.collect.Sets;
 import org.dllearner.algorithms.semkernel.SemKernel;
 import org.dllearner.algorithms.semkernel.SemKernel.SvmType;
 import org.dllearner.core.ComponentAnn;
 import org.dllearner.core.ComponentInitException;
 import org.semanticweb.elk.owlapi.ElkReasonerFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLDataFactory;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.reasoner.ConsoleProgressMonitor;
-import org.semanticweb.owlapi.reasoner.InferenceType;
-import org.semanticweb.owlapi.reasoner.OWLReasoner;
-import org.semanticweb.owlapi.reasoner.OWLReasonerConfiguration;
-import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
-import org.semanticweb.owlapi.reasoner.SimpleConfiguration;
-
+import org.semanticweb.owlapi.model.*;
+import org.semanticweb.owlapi.reasoner.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.manchester.cs.owl.owlapi.OWLClassImpl;
 
-import com.google.common.collect.Sets;
+import java.io.*;
+import java.util.*;
 
 /**
  * Since the current setup for running a SemKernel example comprises several
@@ -187,7 +171,7 @@ public class MPSemKernelWorkflow extends SemKernelWorkflow {
     private boolean doPrediction = true;
 
     // -------------------------------- misc ---------------------------------
-    private final Logger logger = Logger.getLogger(MPSemKernelWorkflow.class);
+    private final Logger logger = LoggerFactory.getLogger(MPSemKernelWorkflow.class);
     private OWLDataFactory dataFactory;
     private OWLOntology mpKB;
     private OWLReasoner mpKBReasoner;

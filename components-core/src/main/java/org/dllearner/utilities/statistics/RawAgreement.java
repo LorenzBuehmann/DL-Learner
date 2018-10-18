@@ -18,11 +18,13 @@
  */
 package org.dllearner.utilities.statistics;
 
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RawAgreement {
 
-	private static Logger logger = Logger.getLogger(FleissKappa.class);
+	private static Logger logger = LoggerFactory.getLogger(FleissKappa.class);
 
 	public static float computeRawAgreement(short[][] mat) {
 		final int K = mat.length;

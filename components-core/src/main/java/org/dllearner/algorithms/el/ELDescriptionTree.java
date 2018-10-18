@@ -18,30 +18,16 @@
  */
 package org.dllearner.algorithms.el;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.NavigableSet;
-import java.util.Set;
-import java.util.TreeSet;
-
-import org.apache.log4j.Logger;
 import org.dllearner.core.AbstractReasonerComponent;
 import org.dllearner.core.owl.ClassHierarchy;
 import org.dllearner.core.owl.ObjectPropertyHierarchy;
 import org.dllearner.core.owl.UnsupportedLanguageException;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLClassExpression;
-import org.semanticweb.owlapi.model.OWLDataProperty;
-import org.semanticweb.owlapi.model.OWLDataSomeValuesFrom;
-import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
-import org.semanticweb.owlapi.model.OWLObjectProperty;
-import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
-import org.semanticweb.owlapi.model.OWLProperty;
+import org.semanticweb.owlapi.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Represents an EL OWLClassExpression tree. Unlike {@link ELDescriptionNode}, this is
@@ -54,7 +40,7 @@ import org.semanticweb.owlapi.model.OWLProperty;
 public class ELDescriptionTree implements Cloneable {
 
 	@SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(ELDescriptionTree.class);
+	private static Logger logger = LoggerFactory.getLogger(ELDescriptionTree.class);
 	
 	// to simplify equivalence checks and minimisation, we
 	// attach a simulation relation to the OWLClassExpression tree

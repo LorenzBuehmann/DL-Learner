@@ -18,9 +18,9 @@
  */
 package org.dllearner.kb.extraction;
 
-import org.apache.log4j.Logger;
 
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Property node, has connection to a and b part
@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
 
 public abstract class PropertyNode extends Node {
 
-	public static Logger logger = Logger.getLogger(PropertyNode.class);
+	public static Logger logger = LoggerFactory.getLogger(PropertyNode.class);
 	
 	// the a and b part of a property
 	protected Node a;

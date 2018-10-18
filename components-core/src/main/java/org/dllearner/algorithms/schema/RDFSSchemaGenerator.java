@@ -2,10 +2,6 @@ package org.dllearner.algorithms.schema;
 
 import org.apache.jena.rdf.model.Model;
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.SimpleLayout;
 import org.dllearner.utilities.OwlApiJenaUtils;
 import org.dllearner.utilities.owl.DLSyntaxObjectRendererExt;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -149,16 +145,7 @@ public class RDFSSchemaGenerator extends AbstractSchemaGenerator {
 	public static void main(String[] args) throws Exception {
 		ToStringRenderer.getInstance().setRenderer(new DLSyntaxObjectRendererExt());
 
-		org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
-		org.apache.log4j.Logger.getRootLogger().removeAllAppenders();
-		org.apache.log4j.Logger.getRootLogger().addAppender(new ConsoleAppender(new SimpleLayout()));
 		org.apache.log4j.Logger.getLogger(RDFSSchemaGenerator.class).setLevel(Level.DEBUG);
-
-		Enumeration<org.apache.log4j.Logger> currentLoggers = LogManager.getCurrentLoggers();
-		while(currentLoggers.hasMoreElements()) {
-			org.apache.log4j.Logger logger = currentLoggers.nextElement();
-			System.out.println(logger.getName());
-		}
 
 		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
 		OWLDataFactory df = man.getOWLDataFactory();

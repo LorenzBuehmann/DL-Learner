@@ -18,10 +18,11 @@
  */
 package org.dllearner.algorithms.qtl.operations;
 
-import org.apache.log4j.Logger;
 import org.dllearner.algorithms.qtl.datastructures.QueryTree;
 import org.dllearner.algorithms.qtl.datastructures.impl.QueryTreeImpl;
 import org.dllearner.kb.sparql.SparqlEndpoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -41,7 +42,7 @@ import java.util.*;
  */
 public class PostLGG<N> {
 	
-	private static final Logger logger = Logger.getLogger(PostLGG.class);
+	private static final Logger logger = LoggerFactory.getLogger(PostLGG.class);
 	
 	private SparqlEndpoint endpoint;
 	

@@ -25,11 +25,12 @@ import joptsimple.OptionSpec;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.log4j.Logger;
 import org.dllearner.kb.repository.OntologyRepository;
 import org.dllearner.kb.repository.OntologyRepositoryEntry;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -46,7 +47,7 @@ import java.util.*;
 
 public class BioPortalRepository implements OntologyRepository {
 	
-	private static final Logger log = Logger.getLogger(BioPortalRepository.class);
+	private static final Logger log = LoggerFactory.getLogger(BioPortalRepository.class);
 	
 	private static final String apiKey = "20caf25c-f140-4fef-be68-ff1a3936f405";
 	private static final String serviceURL = "http://rest.bioontology.org/bioportal/ontologies";

@@ -18,17 +18,13 @@
  */
 package org.dllearner.algorithms.qtl.operations.nbr.strategy;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.log4j.Logger;
+import org.apache.jena.graph.Node;
 import org.dllearner.algorithms.qtl.QueryTreeUtils;
 import org.dllearner.algorithms.qtl.datastructures.impl.RDFResourceTree;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.apache.jena.graph.Node;
+import java.util.*;
 
 /**
  * 
@@ -37,7 +33,7 @@ import org.apache.jena.graph.Node;
  */
 public class BruteForceNBRStrategy implements NBRStrategy {
 	
-	private static final Logger logger = Logger.getLogger(BruteForceNBRStrategy.class);
+	private static final Logger logger = LoggerFactory.getLogger(BruteForceNBRStrategy.class);
 
 	@Override
 	public RDFResourceTree computeNBR(RDFResourceTree posExampleTree, List<RDFResourceTree> negExampleTrees) {

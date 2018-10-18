@@ -18,17 +18,17 @@
  */
 package org.dllearner.kb.sparql;
 
+import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import uk.ac.manchester.cs.owl.owlapi.OWLClassImpl;
+import uk.ac.manchester.cs.owl.owlapi.OWLObjectUnionOfImpl;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import org.apache.log4j.Logger;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLClassExpression;
-
-import uk.ac.manchester.cs.owl.owlapi.OWLClassImpl;
-import uk.ac.manchester.cs.owl.owlapi.OWLObjectUnionOfImpl;
 
 
 /**
@@ -40,7 +40,7 @@ import uk.ac.manchester.cs.owl.owlapi.OWLObjectUnionOfImpl;
 public class SparqlQueryDescriptionConvertRDFS {
 
 	//LOGGER: SparqlQueryDescriptionConvertVisitor
-	static Logger logger = Logger.getLogger(SparqlQueryDescriptionConvertRDFS.class);
+	static Logger logger = LoggerFactory.getLogger(SparqlQueryDescriptionConvertRDFS.class);
 
 	/**
 	 * 

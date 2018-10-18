@@ -18,18 +18,18 @@
  */
 package org.dllearner.kb.extraction;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import org.apache.log4j.Logger;
+import com.jamonapi.Monitor;
 import org.dllearner.kb.aquisitors.SparqlTupleAquisitorImproved;
 import org.dllearner.kb.aquisitors.TupleAquisitor;
 import org.dllearner.utilities.JamonMonitorLogger;
 import org.dllearner.utilities.statistics.SimpleClock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.jamonapi.Monitor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * This class is used to extract the information .
@@ -43,7 +43,7 @@ public class ExtractionAlgorithm {
 	private boolean stop = false;
 
 	
-	private static Logger logger = Logger
+	private static Logger logger = LoggerFactory
 		.getLogger(ExtractionAlgorithm.class);
 
 	public ExtractionAlgorithm(Configuration configuration) {

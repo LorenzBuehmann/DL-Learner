@@ -18,9 +18,11 @@
 		<!-- log4j.version>2.9.1</log4j.version -->
 		<log4j.version>1.2.17</log4j.version>
         <solr.version>7.1.0</solr.version>
+		<jackson.version>2.9.0</jackson.version>
         <owlapi.version>4.5.0</owlapi.version>
         <spring.version>4.3.3.RELEASE</spring.version>
         <jena.sparql.api.version>3.6.0-3</jena.sparql.api.version>
+		<sesame.version>2.7.16</sesame.version>
 		<pellet.version>2.5.0-dllearner</pellet.version>
 	</properties>
 
@@ -358,7 +360,7 @@
 		<dependency>
 			<groupId>com.google.code.findbugs</groupId>
 			<artifactId>jsr305</artifactId>
-			<version>2.0.1</version>
+			<version>3.0.1</version>
 		</dependency>
 	</dependencies>
 
@@ -859,22 +861,6 @@
 						<groupId>commons-cli</groupId>
 						<artifactId>commons-cli</artifactId>
 					</exclusion>
-					<exclusion>
-						<groupId>org.openrdf.sesame</groupId>
-						<artifactId>sesame-runtime</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.openrdf.sesame</groupId>
-						<artifactId>sesame-rio-n3</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.openrdf.sesame</groupId>
-						<artifactId>sesame-rio-turtle</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.openrdf.sesame</groupId>
-						<artifactId>sesame-rio-rdfxml</artifactId>
-					</exclusion>
 				</exclusions>
 			</dependency>
 			<dependency>
@@ -906,7 +892,17 @@
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-core</artifactId>
-				<version>2.8.5</version>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${jackson.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.github.jsonld-java</groupId>
@@ -933,7 +929,64 @@
 				<artifactId>commons-validator</artifactId>
 				<version>1.6</version>
 			</dependency>
+			<dependency>
+				<groupId>commons-collections</groupId>
+				<artifactId>commons-collections</artifactId>
+				<version>3.2.2</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-digester</groupId>
+				<artifactId>commons-digester</artifactId>
+				<version>1.8.1</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>1.9</version>
+			</dependency>
+			<dependency>
+				<groupId>org.semarglproject</groupId>
+				<artifactId>semargl-sesame</artifactId>
+				<version>0.7</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-model</artifactId>
+				<version>${sesame.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-runtime</artifactId>
+				<version>${sesame.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-rio-api</artifactId>
+				<version>${sesame.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-rio-n3</artifactId>
+				<version>${sesame.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-rio-turtle</artifactId>
+				<version>${sesame.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openrdf.sesame</groupId>
+				<artifactId>sesame-rio-rdfxml</artifactId>
+				<version>${sesame.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.sf.opencsv</groupId>
+				<artifactId>opencsv</artifactId>
+				<version>2.3</version>
+			</dependency>
+
 		</dependencies>
+
 	</dependencyManagement>
 
 	<repositories>

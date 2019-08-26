@@ -3,20 +3,17 @@ package org.dllearner.utilities.graph;
 import java.io.File;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.GraphWalk;
 import org.jgrapht.graph.builder.GraphTypeBuilder;
-import org.jgrapht.traverse.RandomWalkIterator;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.dlsyntax.renderer.DLSyntaxObjectRenderer;
 import org.semanticweb.owlapi.io.ToStringRenderer;
 import org.semanticweb.owlapi.model.*;
-import static org.apache.jena.sys.JenaSystem.forEach;
 
 /**
  * Utility methods working on graph level by means of JGraphT API.
@@ -132,8 +129,28 @@ public class GraphUtils {
         return g;
     }
 
+    public static <V, E> List<GraphPath<V, E>> getPaths(Graph<V, E> g, V startNode, Integer maxLength) {
+        return getPaths(g, Collections.singleton(startNode), maxLength);
+    }
 
-    public static void main(String[] args) throws OWLOntologyCreationException {
+    public static <V, E> List<GraphPath<V, E>> getPaths(Graph<V, E> g, Set<V> startNodes, Integer maxLength) {
+        return new AllPaths<>(g).getAllPaths(startNodes, true, maxLength);
+    }
+
+    public static <V, E extends LabeledEdge<T>, T> TreeMap<List<T>, Long> getPathsWithFrequencies(Graph<V, E> g,
+                                                                                                  Set<V> startNodes,
+                                                                                                  Integer maxLength) {
+        // sort by length
+        Comparator<List<T>> c = Comparator
+                .<List<T>>comparingInt(List::size)
+                .thenComparing(Object::toString);
+        return getPaths(g, startNodes, maxLength).stream()  // compute paths
+                .map(path -> path.getEdgeList().stream().map(LabeledEdge::getLabel).collect(Collectors.toList())) // map to edge sequences
+                .collect(Collectors.groupingBy(Function.identity(), () -> new TreeMap<>(c), Collectors.counting())); // compute frequency per edge sequence
+    }
+
+
+    public static void main(String[] args) throws Exception {
         ToStringRenderer.getInstance().setRenderer(new DLSyntaxObjectRenderer());
 
         OWLOntology ont = OWLManager.createOWLOntologyManager().loadOntologyFromOntologyDocument(new File("/home/user/work/datasets/poker/poker_straight_flush_p5-n347.owl"));
@@ -155,6 +172,9 @@ public class GraphUtils {
 
         startNodes.forEach(node -> {
 
+            System.out.println("----------------------------------------------");
+            System.out.println("node: " + node);
+
             // compute all path up to length
             List<GraphPath<TypedOWLIndividual, OWLPropertyEdge>> paths = new AllPaths<>(g).getAllPaths(node, true, maxPathLength);
 
@@ -167,13 +187,18 @@ public class GraphUtils {
                     .collect(Collectors.toList());
 //            pathEdges.forEach(System.out::println);
 
-            // show just the distinct list of the edge sequences
-            List<List<OWLObjectPropertyExpression>> pathEdgesDistinct = new ArrayList<>(new HashSet<>(pathEdges));
+            // compute frequency per edge sequence
+            Map<List<OWLObjectPropertyExpression>, Long> edgeSequenceWithFrequency = pathEdges.stream()
+                    .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
-            Comparator<List<OWLObjectPropertyExpression>> c = Comparator.<List<OWLObjectPropertyExpression>>comparingInt(List::size).thenComparing(Object::toString);
+            // sort by length
+            Comparator<List<OWLObjectPropertyExpression>> c = Comparator
+                    .<List<OWLObjectPropertyExpression>>comparingInt(List::size)
+                    .thenComparing(Object::toString);
+            SortedMap<List<OWLObjectPropertyExpression>, Long> edgeSequenceWithFrequencySorted = new TreeMap<>(c);
+            edgeSequenceWithFrequencySorted.putAll(edgeSequenceWithFrequency);
 
-            Collections.sort(pathEdgesDistinct, c);
-            pathEdgesDistinct.forEach(System.out::println);
+            edgeSequenceWithFrequencySorted.forEach((k, v) -> System.out.println(v + "\t:" + k));
 
         });
     }

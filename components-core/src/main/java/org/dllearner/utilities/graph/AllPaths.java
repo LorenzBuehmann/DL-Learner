@@ -135,12 +135,11 @@ public class AllPaths<V, E> {
                     "If search is not restricted to simple paths, a maximum path length must be set to avoid infinite cycles");
         }
 
-        if ((sourceVertices.isEmpty())) {
+        if (sourceVertices.isEmpty()) {
             return Collections.emptyList();
         }
 
         // Generate all the paths
-        return generatePaths(
-                sourceVertices, simplePathsOnly, maxPathLength);
+        return generatePaths(sourceVertices, simplePathsOnly, maxPathLength);
     }
 }

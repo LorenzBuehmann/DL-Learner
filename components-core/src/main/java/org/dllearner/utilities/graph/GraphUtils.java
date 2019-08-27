@@ -6,6 +6,11 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import org.apache.commons.lang3.tuple.Pair;
+import org.dllearner.utilities.examples.ExamplesProvider;
+import org.glassfish.json.JsonUtil;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultEdge;
@@ -14,6 +19,9 @@ import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.dlsyntax.renderer.DLSyntaxObjectRenderer;
 import org.semanticweb.owlapi.io.ToStringRenderer;
 import org.semanticweb.owlapi.model.*;
+import org.semanticweb.owlapi.model.parameters.Imports;
+import uk.ac.manchester.cs.owl.owlapi.OWLClassImpl;
+import uk.ac.manchester.cs.owl.owlapi.OWLNamedIndividualImpl;
 
 /**
  * Utility methods working on graph level by means of JGraphT API.
@@ -78,7 +86,7 @@ public class GraphUtils {
     private static TypedOWLIndividual toTypedIndividual(OWLIndividual ind, OWLOntology ont) {
         Set<OWLClass> types = ont.getClassAssertionAxioms(ind).stream()
                 .map(OWLClassAssertionAxiom::getClassExpression)
-                .filter(ce -> !ce.isAnonymous())
+                .filter(ce -> !ce.isAnonymous() && !ce.isOWLThing())
                 .map(OWLClassExpression::asOWLClass)
                 .collect(Collectors.toSet());
 
@@ -110,6 +118,10 @@ public class GraphUtils {
         // at least when inference would be used
         Map<OWLIndividual, TypedOWLIndividual> cache = new HashMap<>();
 
+        // we also have to add all individuals not occurring in any property relation, so
+        // we just create nodes for all individuals and add them to the graph
+        ont.getIndividualsInSignature().forEach(ind -> g.addVertex(cache.computeIfAbsent(ind, i -> toTypedIndividual(i, ont))));
+
         axioms.forEach(ax -> {
             // process the subject
             OWLIndividual ind = ax.getSubject();
@@ -138,69 +150,22 @@ public class GraphUtils {
     }
 
     public static <V, E extends LabeledEdge<T>, T> TreeMap<List<T>, Long> getPathsWithFrequencies(Graph<V, E> g,
-                                                                                                  Set<V> startNodes,
+                                                                                                  V startNode,
                                                                                                   Integer maxLength) {
         // sort by length
         Comparator<List<T>> c = Comparator
                 .<List<T>>comparingInt(List::size)
                 .thenComparing(Object::toString);
-        return getPaths(g, startNodes, maxLength).stream()  // compute paths
+        return getPaths(g, startNode, maxLength).stream()  // compute paths
                 .map(path -> path.getEdgeList().stream().map(LabeledEdge::getLabel).collect(Collectors.toList())) // map to edge sequences
                 .collect(Collectors.groupingBy(Function.identity(), () -> new TreeMap<>(c), Collectors.counting())); // compute frequency per edge sequence
     }
 
-
-    public static void main(String[] args) throws Exception {
-        ToStringRenderer.getInstance().setRenderer(new DLSyntaxObjectRenderer());
-
-        OWLOntology ont = OWLManager.createOWLOntologyManager().loadOntologyFromOntologyDocument(new File("/home/user/work/datasets/poker/poker_straight_flush_p5-n347.owl"));
-        OWLClass hand = OWLManager.getOWLDataFactory().getOWLClass(IRI.create("http://dl-learner.org/examples/uci/poker#Hand"));
-        final String targetClass = "straight_flush";
-
-        Graph<TypedOWLIndividual, OWLPropertyEdge> g = aboxToLabeledGraphWithTypes(ont);
-
-        Set<TypedOWLIndividual> startNodes = ont.getIndividualsInSignature().stream()
-                .filter(ind -> ont.getAnnotationAssertionAxioms(ind.asOWLNamedIndividual().getIRI()).stream()
-                        .map(OWLAnnotationAssertionAxiom::annotationValue)
-                        .map(OWLAnnotationValue::asLiteral)
-                        .anyMatch(lit -> lit.isPresent() && lit.get().getLiteral().equals(targetClass)))
-                .map(TypedOWLIndividual::new)
-                .limit(1)
-                .collect(Collectors.toSet());
-
-        int maxPathLength = 10;
-
-        startNodes.forEach(node -> {
-
-            System.out.println("----------------------------------------------");
-            System.out.println("node: " + node);
-
-            // compute all path up to length
-            List<GraphPath<TypedOWLIndividual, OWLPropertyEdge>> paths = new AllPaths<>(g).getAllPaths(node, true, maxPathLength);
-
-            // show all paths
-            paths.forEach(System.out::println);
-
-            // show all paths but just the edges
-            List<List<OWLObjectPropertyExpression>> pathEdges = paths.stream()
-                    .map(path -> path.getEdgeList().stream().map(LabeledEdge::getLabel).collect(Collectors.toList()))
-                    .collect(Collectors.toList());
-//            pathEdges.forEach(System.out::println);
-
-            // compute frequency per edge sequence
-            Map<List<OWLObjectPropertyExpression>, Long> edgeSequenceWithFrequency = pathEdges.stream()
-                    .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-
-            // sort by length
-            Comparator<List<OWLObjectPropertyExpression>> c = Comparator
-                    .<List<OWLObjectPropertyExpression>>comparingInt(List::size)
-                    .thenComparing(Object::toString);
-            SortedMap<List<OWLObjectPropertyExpression>, Long> edgeSequenceWithFrequencySorted = new TreeMap<>(c);
-            edgeSequenceWithFrequencySorted.putAll(edgeSequenceWithFrequency);
-
-            edgeSequenceWithFrequencySorted.forEach((k, v) -> System.out.println(v + "\t:" + k));
-
-        });
+    public static <V, E extends LabeledEdge<T>, T> Map<V, TreeMap<List<T>, Long>> getPathsWithFrequencies(Graph<V, E> g,
+                                                                                                  Set<V> startNodes,
+                                                                                                  Integer maxLength) {
+        return startNodes.stream()
+                .collect(Collectors.toMap(Function.identity(), v -> getPathsWithFrequencies(g, v, maxLength)));
     }
 
 

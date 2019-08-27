@@ -14,23 +14,36 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
-import org.semanticweb.owlapi.model.parameters.Imports;
 import org.semanticweb.owlapi.util.DefaultPrefixManager;
 import static java.util.stream.Collectors.groupingBy;
-import static org.apache.jena.sys.JenaSystem.forEach;
 
 /**
  * Convert Poker dataset to OWL.
  *
  * @author Lorenz Buehmann
  */
-public class PokerDatasetConverter {
+public class PokerDataset {
 
-    static OWLDataFactory df = OWLManager.getOWLDataFactory();
-    static String NS = "http://dl-learner.org/examples/uci/poker#";
-    static PrefixManager pm = new DefaultPrefixManager(NS);
+    private static OWLDataFactory df = OWLManager.getOWLDataFactory();
+    private static String NS = "http://dl-learner.org/examples/uci/poker#";
+    private static PrefixManager pm = new DefaultPrefixManager(NS);
 
-    static final AtomicInteger index = new AtomicInteger();
+    private static final AtomicInteger index = new AtomicInteger();
+
+    /**
+     * Utility method that returns the individuals annotated with the given target class.
+     *
+     * @param ont the ontology
+     * @return the examples
+     */
+    public static Set<OWLNamedIndividual> getExamples(OWLOntology ont, String targetClass) {
+        return ont.getIndividualsInSignature().stream()
+                .filter(ind -> ont.getAnnotationAssertionAxioms(ind.asOWLNamedIndividual().getIRI()).stream()
+                        .map(OWLAnnotationAssertionAxiom::annotationValue)
+                        .map(OWLAnnotationValue::asLiteral)
+                        .anyMatch(lit -> lit.isPresent() && lit.get().getLiteral().equals(targetClass)))
+                .collect(Collectors.toSet());
+    }
 
     public static void main(String[] args) throws Exception {
         if(args.length != 2) {
@@ -60,7 +73,7 @@ public class PokerDatasetConverter {
             try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
                 Set<OWLAxiom> sampleAxioms = stream.filter(l -> l.endsWith(String.valueOf(idx)))
                         .limit(n)
-                        .map(PokerDatasetConverter::convertLine)
+                        .map(PokerDataset::convertLine)
                         .flatMap(Collection::stream)
                         .collect(Collectors.toSet());
                 target2sampleAxioms.put(idx, sampleAxioms);
@@ -115,21 +128,19 @@ public class PokerDatasetConverter {
 
     }
 
-    static OWLClass hand;
-    static OWLClass card;
-    static OWLClass suit;
-    static OWLClass rank;
-    static OWLObjectProperty hasCard;
-    static OWLObjectProperty hasRank;
-    static OWLObjectProperty sameRank;
-    static OWLObjectProperty hasSuit;
-    static OWLObjectProperty sameSuit;
-    static OWLObjectProperty nextRank;
-    static OWLAnnotationProperty pokerHand;
+    public static final OWLClass hand;
+    public static final OWLClass card;
+    public static final OWLClass suit;
+    public static final OWLClass rank;
+    public static final OWLObjectProperty hasCard;
+    public static final OWLObjectProperty hasRank;
+    public static final OWLObjectProperty sameRank;
+    public static final OWLObjectProperty hasSuit;
+    public static final OWLObjectProperty sameSuit;
+    public static final OWLObjectProperty nextRank;
+    public static final OWLAnnotationProperty pokerHand;
 
-    private static void createSchema(OWLOntology ont) {
-        OWLOntologyManager man = ont.getOWLOntologyManager();
-
+    static {
         hand = df.getOWLClass("Hand", pm);
         card = df.getOWLClass("Card", pm);
         suit = df.getOWLClass("Suit", pm);
@@ -144,6 +155,14 @@ public class PokerDatasetConverter {
         sameSuit = df.getOWLObjectProperty("sameSuit", pm);
 
         pokerHand = df.getOWLAnnotationProperty("pokerHand", pm);
+    }
+
+    class Converter {
+
+    }
+
+    private static void createSchema(OWLOntology ont) {
+        OWLOntologyManager man = ont.getOWLOntologyManager();
 
         man.addAxiom(ont, df.getOWLObjectPropertyDomainAxiom(hasRank, card));
         man.addAxiom(ont, df.getOWLObjectPropertyRangeAxiom(hasRank, rank));

@@ -1221,7 +1221,7 @@ public abstract class AbstractReasonerComponent extends AbstractComponent implem
 			return getObjectPropertyHierarchy().getMoreSpecialRoles(role);
 		} else {
 			try {
-				return getSuperPropertiesImpl(role);
+				return getSubPropertiesImpl(role);
 			} catch (ReasoningMethodUnsupportedException e) {
 				e.printStackTrace();
 			}
@@ -1253,7 +1253,16 @@ public abstract class AbstractReasonerComponent extends AbstractComponent implem
 	
 	@Override
 	public final SortedSet<OWLDataProperty> getSuperProperties(OWLDataProperty role) {
-		return getDatatypePropertyHierarchy().getMoreGeneralRoles(role);
+		if(precomputeDataPropertyHierarchy) {
+			return getDatatypePropertyHierarchy().getMoreGeneralRoles(role);
+		} else {
+			try {
+				return getSuperPropertiesImpl(role);
+			} catch (ReasoningMethodUnsupportedException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 
 	protected SortedSet<OWLDataProperty> getSuperPropertiesImpl(OWLDataProperty role) throws ReasoningMethodUnsupportedException {
@@ -1262,7 +1271,16 @@ public abstract class AbstractReasonerComponent extends AbstractComponent implem
 	
 	@Override
 	public final SortedSet<OWLDataProperty> getSubProperties(OWLDataProperty role) {
-		return getDatatypePropertyHierarchy().getMoreSpecialRoles(role);
+		if(precomputeDataPropertyHierarchy) {
+			return getDatatypePropertyHierarchy().getMoreSpecialRoles(role);
+		} else {
+			try {
+				return getSubPropertiesImpl(role);
+			} catch (ReasoningMethodUnsupportedException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 
 	protected SortedSet<OWLDataProperty> getSubPropertiesImpl(OWLDataProperty role) throws ReasoningMethodUnsupportedException {

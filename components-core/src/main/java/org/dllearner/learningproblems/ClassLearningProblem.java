@@ -22,6 +22,8 @@ import com.google.common.collect.Sets;
 import org.dllearner.accuracymethods.*;
 import org.dllearner.core.*;
 import org.dllearner.core.config.ConfigOption;
+import org.dllearner.reasoning.CypherReasoner;
+import org.dllearner.reasoning.SPARQLReasoner;
 import org.dllearner.utilities.ReasoningUtils;
 import org.dllearner.utilities.ReasoningUtils.Coverage;
 import org.dllearner.utilities.ReasoningUtilsCLP;
@@ -32,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.manchester.cs.owl.owlapi.OWLDataFactoryImpl;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * The problem of learning the OWL class expression of an existing class
@@ -129,10 +132,14 @@ public class ClassLearningProblem extends AbstractClassExpressionLearningProblem
 		// we compute the instances of the super class to perform
 		// optimisations later on
 		Set<OWLClassExpression> superClasses = getReasoner().getSuperClasses(classToDescribe);
-		TreeSet<OWLIndividual> superClassInstancesTmp = new TreeSet<>(getReasoner().getIndividuals());
-		for (OWLClassExpression superClass : superClasses) {
-			superClassInstancesTmp.retainAll(getReasoner().getIndividuals(superClass));
-		}
+//		TreeSet<OWLIndividual> superClassInstancesTmp = new TreeSet<>(getReasoner().getIndividuals());
+//		for (OWLClassExpression superClass : superClasses) {
+//			superClassInstancesTmp.retainAll(getReasoner().getIndividuals(superClass));
+//		}
+
+		TreeSet<OWLIndividual> superClassInstancesTmp = superClasses.stream()
+															.flatMap(cls -> reasoner.getIndividuals(cls).stream())
+															.collect(Collectors.toCollection(TreeSet::new));
 		// we create one list, which includes instances of the class (an instance of the class is also instance of all super classes) ...
 		classAndSuperClassInstances = new LinkedList<>(superClassInstancesTmp);
 		// ... and a second list not including them
@@ -259,17 +266,23 @@ public class ClassLearningProblem extends AbstractClassExpressionLearningProblem
 	 * @return the isConsistent
 	 */
 	public boolean isConsistent(OWLClassExpression description) {
-		OWLAxiom axiom;
-		if (equivalence) {
-			axiom = df.getOWLEquivalentClassesAxiom(classToDescribe, description);
-		} else {
-			axiom = df.getOWLSubClassOfAxiom(classToDescribe, description);
+		if(reasoner instanceof SPARQLReasoner || reasoner instanceof CypherReasoner) {
+			return true;
 		}
+		OWLAxiom axiom = equivalence
+				? df.getOWLEquivalentClassesAxiom(classToDescribe, description)
+				: df.getOWLSubClassOfAxiom(classToDescribe, description);
+
 		return getReasoner().remainsSatisfiable(axiom);
 	}
 
 	public boolean followsFromKB(OWLClassExpression description) {
-		return equivalence ? getReasoner().isEquivalentClass(description, classToDescribe) : getReasoner().isSuperClassOf(description, classToDescribe);
+		if(description.isAnonymous() && (reasoner instanceof SPARQLReasoner || reasoner instanceof CypherReasoner)) {
+			return false;
+		}
+		return equivalence
+				? getReasoner().isEquivalentClass(description, classToDescribe)
+				: getReasoner().isSuperClassOf(description, classToDescribe);
 	}
 
 	public int getMaxExecutionTimeInSeconds() {

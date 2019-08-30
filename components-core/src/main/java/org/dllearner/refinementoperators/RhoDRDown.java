@@ -24,6 +24,7 @@ import org.dllearner.core.annotations.NoConfigOption;
 import org.dllearner.core.config.ConfigOption;
 import org.dllearner.core.options.CommonConfigOptions;
 import org.dllearner.core.owl.*;
+import org.dllearner.reasoning.CypherReasoner;
 import org.dllearner.reasoning.SPARQLReasoner;
 import org.dllearner.utilities.OWLAPIUtils;
 import org.dllearner.utilities.owl.ConceptTransformation;
@@ -336,8 +337,8 @@ public class RhoDRDown extends RefinementOperatorAdapter implements Component, C
 
 		// compute splits for numeric data properties
 		if(useNumericDatatypes) {
-			if(reasoner instanceof SPARQLReasoner
-					&& !((SPARQLReasoner)reasoner).isUseGenericSplitsCode()) {
+			if((reasoner instanceof SPARQLReasoner
+					&& !((SPARQLReasoner)reasoner).isUseGenericSplitsCode())  || (reasoner instanceof CypherReasoner)) {
 				// TODO SPARQL support for splits
 				logger.warn("Numeric Facet restrictions are not (yet) implemented for " + AnnComponentManager.getName(reasoner) + ", option ignored");
 			} else {
@@ -1047,7 +1048,7 @@ public class RhoDRDown extends RefinementOperatorAdapter implements Component, C
 								(domain != null && mA.get(domain).get(j).size()==0))
 							validCombo = false;
 					}
-
+					validCombo = false; // todo add option to disable union
 					if(validCombo) {
 
 						SortedSet<OWLObjectUnionOf> baseSet = new TreeSet<>();

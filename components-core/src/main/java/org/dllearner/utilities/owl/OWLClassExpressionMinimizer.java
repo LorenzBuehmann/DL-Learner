@@ -20,7 +20,11 @@ package org.dllearner.utilities.owl;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import org.aksw.jena_sparql_api.stmt.SPARQLResultEx;
 import org.dllearner.core.AbstractReasonerComponent;
+import org.dllearner.learningproblems.ScorePosNeg;
+import org.dllearner.reasoning.CypherReasoner;
+import org.dllearner.reasoning.SPARQLReasoner;
 import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.util.OWLObjectDuplicator;
 
@@ -86,8 +90,14 @@ public class OWLClassExpressionMinimizer implements OWLClassExpressionVisitorEx<
 		
 		for (int i = 0; i < oldOperands.size(); i++) {
 			OWLClassExpression op1 = oldOperands.get(i);
+			if(op1.isAnonymous() && (reasoner instanceof SPARQLReasoner || reasoner instanceof CypherReasoner)) {
+				continue;
+			}
 			for (int j = i + 1; j < oldOperands.size(); j++) {
 				OWLClassExpression op2 = oldOperands.get(j);
+				if(op2.isAnonymous() && (reasoner instanceof SPARQLReasoner || reasoner instanceof CypherReasoner)) {
+					continue;
+				}
 				
 				//remove operand if it is a super class
 				if(isSubClassOf(op1, op2)){

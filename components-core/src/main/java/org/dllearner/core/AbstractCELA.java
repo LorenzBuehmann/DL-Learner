@@ -27,6 +27,8 @@ import org.dllearner.accuracymethods.AccMethodFMeasure;
 import org.dllearner.accuracymethods.AccMethodPredAcc;
 import org.dllearner.accuracymethods.AccMethodTwoValued;
 import org.dllearner.learningproblems.PosNegLP;
+import org.dllearner.reasoning.CypherReasoner;
+import org.dllearner.reasoning.SPARQLReasoner;
 import org.dllearner.utilities.Helper;
 import org.dllearner.utilities.ReasoningUtils;
 import org.dllearner.utilities.datastructures.DescriptionSubsumptionTree;
@@ -382,9 +384,15 @@ public abstract class AbstractCELA extends AbstractComponent implements ClassExp
 		// we ignore all unsatisfiable classes
 		Set<OWLClass> unsatisfiableClasses = null;
 		try {
-		unsatisfiableClasses = reasoner.getInconsistentClasses();
+			// this operation isn't supported for Cypher of SPARQL
+			// TODO maybe we should return empty sets in the reasoner?
+			if(reasoner instanceof CypherReasoner || reasoner instanceof SPARQLReasoner) {
+				unsatisfiableClasses = Collections.emptySet();
+			} else {
+				unsatisfiableClasses = reasoner.getInconsistentClasses();
+			}
 		} catch (UnsupportedOperationException e) {
-			logger.warn("Ignoring unsatisfiable check due to "+e.getStackTrace()[0]);
+			logger.warn("Ignoring unsatisfiable check due to " + e.getStackTrace()[0]);
 		}
 		if(unsatisfiableClasses != null && !unsatisfiableClasses.isEmpty()) {
 			logger.warn("Ignoring unsatisfiable classes " + unsatisfiableClasses);

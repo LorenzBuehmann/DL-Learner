@@ -1,20 +1,17 @@
 package org.dllearner.reasoning;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.dllearner.algorithms.celoe.CELOE;
 import org.dllearner.core.*;
 import org.dllearner.kb.Neo4JKS;
-import org.dllearner.kb.OWLAPIOntology;
 import org.dllearner.learningproblems.ClassLearningProblem;
 import org.dllearner.refinementoperators.RhoDRDown;
+import org.dllearner.utilities.OWLClassExpressionToCypherConverter;
 import org.neo4j.driver.v1.*;
-import org.neo4j.driver.v1.types.Node;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
-import org.semanticweb.owlapi.util.OWLClassExpressionVisitorAdapter;
 
 import static org.neo4j.driver.v1.Values.parameters;
 
@@ -135,10 +132,10 @@ public class CypherReasoner extends AbstractReasonerComponent {
     final String OP_MEMBERS = "MATCH (s:Resource)-[r: `%s`]->(o:Resource) RETURN s.uri, o.uri";
     final String DP_MEMBERS = "MATCH (s:Resource) WHERE EXISTS (s.{uri: $uri}) RETURN s";
 
-    final String INDIVIDUALS = "with ['Class', 'Relationship', 'Property'] as blacklist\n" +
+    final String ALL_INDIVIDUALS = "with ['Class', 'Relationship', 'Property'] as blacklist\n" +
             "match (n:Resource) \n" +
             "where not any (l in labels(n) where l in blacklist)  \n" +
-            "return n.uri";
+            "return n";
 
 
     @Override
@@ -425,18 +422,20 @@ public class CypherReasoner extends AbstractReasonerComponent {
             return Collections.emptySortedSet();
         } else {
             String query;
+
             if(ce.isOWLThing()) {
-               query = INDIVIDUALS;
+               query = ALL_INDIVIDUALS;
             } else {
                 OWLClassExpressionToCypherConverter conv = new OWLClassExpressionToCypherConverter();
                 conv.setUseInference(useInference);
-                query = conv.convert(ce);
+                query = conv.convert(ce, "n");
             }
+            System.out.println(query);
             try (Session session = driver.session()) {
                 return session.readTransaction((TransactionWork<SortedSet<OWLIndividual>>) tx -> {
                     StatementResult result = tx.run(query);
                     return result.stream()
-                            .map(r -> df.getOWLNamedIndividual(IRI.create(r.get("n0").asNode().get("uri").asString())))
+                            .map(r -> df.getOWLNamedIndividual(IRI.create(r.get("n").asNode().get("uri").asString())))
                             .collect(Collectors.toCollection(TreeSet::new));
                 });
             }
@@ -455,134 +454,6 @@ public class CypherReasoner extends AbstractReasonerComponent {
                                     Collectors.toCollection(TreeSet::new))));
                 });
             }
-    }
-
-    class OWLClassExpressionToCypherConverter extends OWLClassExpressionVisitorAdapter {
-        String query;
-        String inferenceQueryPart;
-
-        int cnt = 0;
-        int depth = 0;
-        Map<Integer, Map<OWLClass, String>> depthToNodeIDMapping = new HashMap<>();
-
-        Map<OWLClass, String> clsToNodeMapping = new HashMap<>();
-
-        Deque<String> currentNode = new ArrayDeque<>();
-        String targetNode;
-
-        boolean useInference = false;
-
-        public void setUseInference(boolean useInference) {
-            this.useInference = useInference;
-        }
-
-        private String nextNode() {
-            return "n" + cnt++;
-        }
-
-        public String convert(OWLClassExpression ce) {
-            query = "MATCH ";
-//            query = "";
-            inferenceQueryPart = "";
-            targetNode = nextNode();
-            currentNode.push(targetNode);
-
-            // if inference is enabled, we have to process all classes in advance and assign nodes
-//            if(useInference) {
-//                precomputeInferences(ce);
-//            }
-
-            ce.accept(this);
-
-            query = inferenceQueryPart + query + "\nRETURN " + targetNode;
-            System.out.println(query);
-            return query;
-        }
-
-        private void precomputeInferences(OWLClassExpression ce) {
-            ce.getClassesInSignature().forEach(cls -> {
-                // we need a new node
-                String node = clsToNodeMapping.computeIfAbsent(cls, k -> nextNode());
-
-                query += INF_CLASS_MEMBERS
-                        .replace("%CLASS_URI%", cls.toStringID())
-                        .replace("%TARGET_NODE%", node);
-            });
-        }
-
-        @Override
-        public void visit(OWLClass cls) {
-            if(useInference) {
-                String node = currentNode.peek();
-
-                inferenceQueryPart += INF_CLASS_MEMBERS
-                        .replace("%CLASS_URI%", cls.toStringID())
-                        .replace("%TARGET_NODE%", node);
-
-                query += "(" + node + ")";
-            } else {
-                query += "(" + currentNode.peek() + ":`" + cls.toStringID() + "`)";
-            }
-        }
-
-        @Override
-        public void visit(OWLObjectSomeValuesFrom ce) {
-//           query += "MATCH ";
-           query += "(" + currentNode.peek() + ")" + "-[:`" + ce.getProperty().asOWLObjectProperty().toStringID() + "`]->";
-           depth++;
-           if(useInference && !ce.getFiller().isAnonymous()) {
-               currentNode.push(clsToNodeMapping.computeIfAbsent(ce.getFiller().asOWLClass(), k -> nextNode()));
-           } else {
-               currentNode.push(nextNode());
-           }
-
-           ce.getFiller().accept(this);
-           depth--;
-           currentNode.pop();
-        }
-
-        final String INF_CLASS_MEMBERS = "CALL semantics.inference.nodesLabelled('%CLASS_URI%'," +
-                "{ catLabel: \"Class\", subCatRel: \"SCO\", catNameProp: \"uri\" }) YIELD node AS %TARGET_NODE%\n";
-
-        @Override
-        public void visit(OWLObjectIntersectionOf ce) {
-            Set<OWLClassExpression> operands = ce.getOperands();
-
-            // we process the classes first
-            List<OWLClass> classes = operands.stream()
-                    .filter(op -> !op.isAnonymous())
-                    .map(OWLClassExpression::asOWLClass)
-                    .collect(Collectors.toList());
-            if (useInference) {
-                // call the inference procedures
-                if(classes.size() == 1) {
-                    classes.get(0).accept(this);
-                } else if(classes.size() >= 2) {
-
-                }
-            } else {
-                // single node with the class labels
-                query += "(" + currentNode.peek();
-                operands.stream().filter(op -> !op.isAnonymous()).map(OWLClassExpression::asOWLClass).forEach(cls -> {
-                    query += ":" + "`" + cls.toStringID() + "`";
-                });
-                query += ")";
-            }
-
-
-            List<OWLClassExpression> classExpressions = operands.stream().filter(OWLClassExpression::isAnonymous).collect(Collectors.toList());
-            if(!classExpressions.isEmpty()) {
-//                query += "MATCH ";
-                classExpressions.get(0).accept(this);
-
-                for (int i = 1; i < classExpressions.size(); i++) {
-                    query += ",";
-                    classExpressions.get(i).accept(this);
-                }
-
-            }
-
-        }
     }
 
     public static void main(String[] args) throws Exception {

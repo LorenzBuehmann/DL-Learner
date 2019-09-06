@@ -2,7 +2,11 @@ package org.dllearner.reasoning;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import com.google.common.collect.Sets;
+import com.google.common.collect.Streams;
+import org.apache.jena.vocabulary.RDFS;
 import org.dllearner.algorithms.celoe.CELOE;
 import org.dllearner.core.*;
 import org.dllearner.kb.Neo4JKS;
@@ -10,10 +14,13 @@ import org.dllearner.learningproblems.ClassLearningProblem;
 import org.dllearner.refinementoperators.RhoDRDown;
 import org.dllearner.utilities.OWLClassExpressionToCypherConverter;
 import org.neo4j.driver.v1.*;
+import org.neo4j.driver.v1.types.Node;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
 
 import static org.neo4j.driver.v1.Values.parameters;
+
+import static java.util.stream.Collectors.*;
 
 /**
  * A reasoner based on Cypher query language used with Neo4J graph database.
@@ -144,7 +151,7 @@ public class CypherReasoner extends AbstractReasonerComponent {
             return session.readTransaction(tx -> {
                 StatementResult result = tx.run(CLASSES_TEMPLATE);
                 return result.stream()
-                        .map(r -> df.getOWLClass(IRI.create(r.get("cls.uri").asString())))
+                        .map(r -> asOWLEntity(r.get("cls.uri"), EntityType.CLASS))
                         .collect(Collectors.toSet());
             });
         }
@@ -156,7 +163,7 @@ public class CypherReasoner extends AbstractReasonerComponent {
             return session.readTransaction(tx -> {
                 StatementResult result = tx.run(OP_TEMPLATE);
                 return result.stream()
-                        .map(r -> df.getOWLObjectProperty(IRI.create(r.get("p.uri").asString())))
+                        .map(r -> asOWLEntity(r.get("p.uri"), EntityType.OBJECT_PROPERTY))
                         .collect(Collectors.toSet());
             });
         }
@@ -168,55 +175,72 @@ public class CypherReasoner extends AbstractReasonerComponent {
             return session.readTransaction(tx -> {
                 StatementResult result = tx.run(DP_TEMPLATE);
                 return result.stream()
-                        .map(r -> df.getOWLDataProperty(IRI.create(r.get("p.uri").asString())))
+                        .map(r -> asOWLEntity(r.get("p.uri"), EntityType.DATA_PROPERTY))
                         .collect(Collectors.toSet());
             });
         }
     }
 
+    @SuppressWarnings("unchecked")
+    private <E extends OWLEntity> E asOWLEntity(Value val, EntityType<E> entityType) {
+        IRI iri = IRI.create(val.asString());
+        if(entityType == EntityType.CLASS) {
+            return (E) df.getOWLClass(iri);
+        } else if(entityType == EntityType.OBJECT_PROPERTY) {
+            return (E) df.getOWLObjectProperty(iri);
+        } else if(entityType == EntityType.DATA_PROPERTY) {
+            return (E) df.getOWLDataProperty(iri);
+        } else if(entityType == EntityType.NAMED_INDIVIDUAL) {
+            return (E) df.getOWLNamedIndividual(iri);
+        } else if(entityType == EntityType.DATATYPE) {
+            return (E) df.getOWLDatatype(iri);
+        }
+        return null;
+    }
+
     @Override
-    protected Set<OWLDataProperty> getBooleanDatatypePropertiesImpl() throws ReasoningMethodUnsupportedException {
+    protected Set<OWLDataProperty> getBooleanDatatypePropertiesImpl() {
         try (Session session = driver.session()) {
             return session.readTransaction(tx -> {
                 StatementResult result = tx.run(DP_BOOLEAN_TEMPLATE);
                 return result.stream()
-                        .map(r -> df.getOWLDataProperty(IRI.create(r.get("p.uri").asString())))
+                        .map(r -> asOWLEntity(r.get("p.uri"), EntityType.DATA_PROPERTY))
                         .collect(Collectors.toSet());
             });
         }
     }
 
     @Override
-    protected Set<OWLDataProperty> getStringDatatypePropertiesImpl() throws ReasoningMethodUnsupportedException {
+    protected Set<OWLDataProperty> getStringDatatypePropertiesImpl() {
         try (Session session = driver.session()) {
             return session.readTransaction(tx -> {
                 StatementResult result = tx.run(DP_STRING_TEMPLATE);
                 return result.stream()
-                        .map(r -> df.getOWLDataProperty(IRI.create(r.get("p.uri").asString())))
+                        .map(r -> asOWLEntity(r.get("p.uri"), EntityType.DATA_PROPERTY))
                         .collect(Collectors.toSet());
             });
         }
     }
 
     @Override
-    protected Set<OWLDataProperty> getIntDatatypePropertiesImpl() throws ReasoningMethodUnsupportedException {
+    protected Set<OWLDataProperty> getIntDatatypePropertiesImpl() {
         try (Session session = driver.session()) {
             return session.readTransaction(tx -> {
                 StatementResult result = tx.run(DP_INT_TEMPLATE);
                 return result.stream()
-                        .map(r -> df.getOWLDataProperty(IRI.create(r.get("p.uri").asString())))
+                        .map(r -> asOWLEntity(r.get("p.uri"), EntityType.DATA_PROPERTY))
                         .collect(Collectors.toSet());
             });
         }
     }
 
     @Override
-    protected Set<OWLDataProperty> getDoubleDatatypePropertiesImpl() throws ReasoningMethodUnsupportedException {
+    protected Set<OWLDataProperty> getDoubleDatatypePropertiesImpl() {
         try (Session session = driver.session()) {
             return session.readTransaction(tx -> {
                 StatementResult result = tx.run(DP_DOUBLE_TEMPLATE);
                 return result.stream()
-                        .map(r -> df.getOWLDataProperty(IRI.create(r.get("p.uri").asString())))
+                        .map(r -> asOWLEntity(r.get("p.uri"), EntityType.DATA_PROPERTY))
                         .collect(Collectors.toSet());
             });
         }
@@ -238,7 +262,7 @@ public class CypherReasoner extends AbstractReasonerComponent {
                                     parameters("uri", ce.asOWLClass().toStringID()));
 
                 return result.stream()
-                        .map(r -> df.getOWLClass(IRI.create(r.get("sub.uri").asString())))
+                        .map(r -> asOWLEntity(r.get("sub.uri"), EntityType.CLASS))
                         .collect(Collectors.toCollection(TreeSet::new));
             });
         }
@@ -254,7 +278,7 @@ public class CypherReasoner extends AbstractReasonerComponent {
                 StatementResult result = tx.run(SUPERCLASSES_TEMPLATE,
                         parameters("uri", ce.asOWLClass().toStringID()));
                 return result.stream()
-                        .map(r -> df.getOWLClass(IRI.create(r.get("sup.uri").asString())))
+                        .map(r -> asOWLEntity(r.get("sup.uri"), EntityType.CLASS))
                         .collect(Collectors.toCollection(TreeSet::new));
             });
         }
@@ -282,7 +306,7 @@ public class CypherReasoner extends AbstractReasonerComponent {
                 StatementResult result = tx.run(SPO_OP_TEMPLATE,
                         parameters("uri", p.toStringID()));
                 return result.stream()
-                        .map(r -> df.getOWLObjectProperty(IRI.create(r.get("sub.uri").asString())))
+                        .map(r -> asOWLEntity(r.get("sub.uri"), EntityType.OBJECT_PROPERTY))
                         .collect(Collectors.toCollection(TreeSet::new));
             });
         }
@@ -295,7 +319,7 @@ public class CypherReasoner extends AbstractReasonerComponent {
                 StatementResult result = tx.run(SUPERPROPERTIES_OP_TEMPLATE,
                         parameters("uri", p.toStringID()));
                 return result.stream()
-                        .map(r -> df.getOWLObjectProperty(IRI.create(r.get("sup.uri").asString())))
+                        .map(r -> asOWLEntity(r.get("sup.uri"), EntityType.OBJECT_PROPERTY))
                         .collect(Collectors.toCollection(TreeSet::new));
             });
         }
@@ -308,7 +332,7 @@ public class CypherReasoner extends AbstractReasonerComponent {
                 StatementResult result = tx.run(SPO_DP_TEMPLATE,
                         parameters("uri", p.toStringID()));
                 return result.stream()
-                        .map(r -> df.getOWLDataProperty(IRI.create(r.get("sub.uri").asString())))
+                        .map(r -> asOWLEntity(r.get("sub.uri"), EntityType.DATA_PROPERTY))
                         .collect(Collectors.toCollection(TreeSet::new));
             });
         }
@@ -321,7 +345,7 @@ public class CypherReasoner extends AbstractReasonerComponent {
                 StatementResult result = tx.run(SUPERPROPERTIES_DP_TEMPLATE,
                         parameters("uri", p.toStringID()));
                 return result.stream()
-                        .map(r -> df.getOWLDataProperty(IRI.create(r.get("sup.uri").asString())))
+                        .map(r -> asOWLEntity(r.get("sup.uri"), EntityType.DATA_PROPERTY))
                         .collect(Collectors.toCollection(TreeSet::new));
             });
         }
@@ -334,7 +358,7 @@ public class CypherReasoner extends AbstractReasonerComponent {
                 StatementResult result = tx.run(DOMAIN_OP_TEMPLATE,
                         parameters("uri", p.toStringID()));
                 Set<OWLClass> domains = result.stream()
-                        .map(r -> df.getOWLClass(IRI.create(r.get("dom.uri").asString())))
+                        .map(r -> asOWLEntity(r.get("dom.uri"), EntityType.CLASS))
                         .collect(Collectors.toSet());
                 OWLClassExpression domain;
                 if(domains.isEmpty()) {
@@ -356,7 +380,7 @@ public class CypherReasoner extends AbstractReasonerComponent {
                 StatementResult result = tx.run(DOMAIN_DP_TEMPLATE,
                         parameters("uri", p.toStringID()));
                 Set<OWLClass> domains = result.stream()
-                        .map(r -> df.getOWLClass(IRI.create(r.get("dom.uri").asString())))
+                        .map(r -> asOWLEntity(r.get("dom.uri"), EntityType.CLASS))
                         .collect(Collectors.toSet());
                 OWLClassExpression domain;
                 if(domains.isEmpty()) {
@@ -378,7 +402,7 @@ public class CypherReasoner extends AbstractReasonerComponent {
                 StatementResult result = tx.run(RANGE_OP_TEMPLATE,
                         parameters("uri", p.toStringID()));
                 Set<OWLClass> domains = result.stream()
-                        .map(r -> df.getOWLClass(IRI.create(r.get("ran.uri").asString())))
+                        .map(r -> asOWLEntity(r.get("ran.uri"), EntityType.CLASS))
                         .collect(Collectors.toSet());
                 OWLClassExpression domain;
                 if(domains.isEmpty()) {
@@ -400,7 +424,7 @@ public class CypherReasoner extends AbstractReasonerComponent {
                 StatementResult result = tx.run(RANGE_DP_TEMPLATE,
                         parameters("uri", p.toStringID()));
                if(result.hasNext()) {
-                   return df.getOWLDatatype(IRI.create(result.next().get("ran.uri").asString()));
+                   return asOWLEntity(result.next().get("ran.uri"), EntityType.DATATYPE);
                }
 
                return null;
@@ -454,6 +478,81 @@ public class CypherReasoner extends AbstractReasonerComponent {
                                     Collectors.toCollection(TreeSet::new))));
                 });
             }
+    }
+
+    final String PROPERTY_MEMBERS = "match path=(s:Resource)-[p]->(o) WHERE s.uri = $uri\n" +
+            "RETURN path";
+
+
+    @Override
+    protected Map<OWLObjectProperty, Set<OWLIndividual>> getObjectPropertyRelationshipsImpl(OWLIndividual individual) {
+        try (Session session = driver.session()) {
+            return session.readTransaction(tx -> {
+                StatementResult result = tx.run(PROPERTY_MEMBERS,
+                                                parameters("uri", individual.toStringID()));
+
+                return result.stream()
+                        .map(r -> r.get("path").asPath())
+                        .collect(groupingBy(p -> df.getOWLObjectProperty(IRI.create(p.relationships().iterator().next().type())),
+                                            mapping(p -> asOWLEntity(p.end().get("uri"), EntityType.NAMED_INDIVIDUAL),
+                                                    toSet())));
+
+            });
+        }
+    }
+
+    final String DATA_PROPERTY_MEMBERS = "match(n:Resource) WHERE n.uri=$uri RETURN n";
+
+    final Set<String> PROPERTY_BLACKLIST = Sets.newHashSet("uri", RDFS.label.getURI());
+    @Override
+    protected Map<OWLDataProperty, Set<OWLLiteral>> getDataPropertyRelationshipsImpl(OWLIndividual individual) {
+        try (Session session = driver.session()) {
+            return session.readTransaction(tx -> {
+                StatementResult result = tx.run(DATA_PROPERTY_MEMBERS,
+                        parameters("uri", individual.toStringID()));
+
+                if (result.hasNext()) {
+                    Node node = result.single().get("n").asNode();
+
+                    Map<OWLDataProperty, Set<OWLLiteral>> res = new HashMap<>();
+                    Streams.stream(node.keys())
+                            .filter(k -> !PROPERTY_BLACKLIST.contains(k))
+                            .forEach(k -> {
+                                OWLDataProperty p = df.getOWLDataProperty(IRI.create(k));
+                                Set<OWLLiteral> lit = asOWLLiterals(node.get(k));
+                                res.put(p, lit);
+                            });
+
+                    return res;
+                } else {
+                    throw new RuntimeException(String.format("individual % not found in KB", individual.toString()));
+                }
+
+            });
+        }
+    }
+
+    private Set<OWLLiteral> asOWLLiterals(Value value) {
+        List<Object> objects = value.asObject() instanceof List
+                                    ? value.asList()
+                                    : Collections.singletonList(value.asObject());
+
+        return objects.stream().map(o -> {
+            OWLLiteral lit;
+            if (o instanceof Integer) {
+                lit = df.getOWLLiteral((Integer) o);
+            } else if (o instanceof Float) {
+                lit = df.getOWLLiteral((Float) o);
+            } else if (o instanceof String) {
+                lit = df.getOWLLiteral((String) o);
+            } else if (o instanceof Boolean) {
+                lit = df.getOWLLiteral((Boolean) o);
+            } else {
+                return Optional.<OWLLiteral>empty();
+            }
+            return Optional.of(lit);
+        }).flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
+                .collect(toSet());
     }
 
     public static void main(String[] args) throws Exception {
@@ -512,6 +611,15 @@ public class CypherReasoner extends AbstractReasonerComponent {
             individuals = reasoner.getIndividuals(ce);
             System.out.println(individuals);
 
+            Map<OWLObjectProperty, Set<OWLIndividual>> objectPropertyRelationships =
+                    reasoner.getObjectPropertyRelationships(df.getOWLNamedIndividual(IRI.create("http://ns.softwiki.de/req/LogEveryUserActivity")));
+
+            objectPropertyRelationships.forEach((k, v) -> System.out.println(k + ":" + v));
+
+            Map<OWLDataProperty, Set<OWLLiteral>> dataPropertyRelationships =
+                    reasoner.getDataPropertyRelationshipsImpl(df.getOWLNamedIndividual(IRI.create("http://ns.softwiki.de/req/LogEveryUserActivity")));
+
+            dataPropertyRelationships.forEach((k, v) -> System.out.println(k + ":" + v));
 
 
             ClassLearningProblem lp = new ClassLearningProblem(reasoner);
@@ -533,7 +641,7 @@ public class CypherReasoner extends AbstractReasonerComponent {
             alg.setWriteSearchTree(true);
             alg.init();
 
-            alg.start();
+//            alg.start();
 
         }
 

@@ -164,8 +164,6 @@ public class DSTTDTClassifier extends AbstractCELA{
 		//inizialization
 		
 		// TODO Auto-generated method stub
-				baseURI = reasoner.getBaseURI();
-				prefixes = reasoner.getPrefixes();
 
 				// if no one injected a heuristic, we use a default one
 				if(heuristic == null) {

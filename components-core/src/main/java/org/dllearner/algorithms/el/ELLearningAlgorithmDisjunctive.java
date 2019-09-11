@@ -155,9 +155,6 @@ public class ELLearningAlgorithmDisjunctive extends AbstractCELA {
 		operator = new ELDown(reasoner, instanceBasedDisjoints);
 		operator.init();
 		
-		baseURI = reasoner.getBaseURI();
-		prefixes = reasoner.getPrefixes();
-		
 		minimizer = new OWLClassExpressionMinimizer(dataFactory, reasoner);
 		
 		noise = noisePercentage/100d;

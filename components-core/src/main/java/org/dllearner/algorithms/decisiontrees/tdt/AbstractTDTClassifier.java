@@ -158,9 +158,6 @@ public abstract class AbstractTDTClassifier extends AbstractCELA {
 	
 	@Override
 	public void init() throws ComponentInitException {
-		// TODO Auto-generated method stub
-		baseURI = reasoner.getBaseURI();
-		prefixes = reasoner.getPrefixes();
 
 		// if no one injected a heuristic, we use a default one
 		if(heuristic == null) {

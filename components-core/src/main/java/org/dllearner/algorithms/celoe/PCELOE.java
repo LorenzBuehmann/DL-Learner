@@ -235,9 +235,6 @@ public class PCELOE extends AbstractCELA {
 
 	@Override
 	public void init() throws ComponentInitException {
-		baseURI = reasoner.getBaseURI();
-		prefixes = reasoner.getPrefixes();
-
 		if(maxExecutionTimeInSeconds != 0 && maxExecutionTimeInSecondsAfterImprovement != 0) {
 			maxExecutionTimeInSeconds = Math.min(maxExecutionTimeInSeconds, maxExecutionTimeInSecondsAfterImprovement);
 		}

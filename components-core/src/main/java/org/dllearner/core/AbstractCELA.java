@@ -79,8 +79,7 @@ public abstract class AbstractCELA extends AbstractComponent implements ClassExp
 	
 	protected EvaluatedDescriptionSet bestEvaluatedDescriptions = new EvaluatedDescriptionSet(AbstractCELA.MAX_NR_OF_RESULTS);
 	protected DecimalFormat dfPercent = new DecimalFormat("0.00%");
-	protected String baseURI;
-	protected Map<String, String> prefixes;
+
 	protected OWLDataFactory dataFactory = new OWLDataFactoryImpl();
 	
 	protected static final OWLClass OWL_THING = new OWLClassImpl(OWLRDFVocabulary.OWL_THING.getIRI());
@@ -533,9 +532,6 @@ public abstract class AbstractCELA extends AbstractComponent implements ClassExp
     @Autowired
     public void setReasoner(AbstractReasonerComponent reasoner) {
         this.reasoner = reasoner;
-        
-        baseURI = reasoner.getBaseURI();
-		prefixes = reasoner.getPrefixes();
     }
     
     @Override

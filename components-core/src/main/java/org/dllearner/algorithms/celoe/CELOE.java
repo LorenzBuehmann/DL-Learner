@@ -242,9 +242,6 @@ public class CELOE extends AbstractCELA implements Cloneable{
 	
 	@Override
 	public void init() throws ComponentInitException {
-		baseURI = reasoner.getBaseURI();
-		prefixes = reasoner.getPrefixes();
-			
 		if(maxExecutionTimeInSeconds != 0 && maxExecutionTimeInSecondsAfterImprovement != 0) {
 			maxExecutionTimeInSeconds = Math.min(maxExecutionTimeInSeconds, maxExecutionTimeInSecondsAfterImprovement);
 		}
@@ -1125,6 +1122,7 @@ public class CELOE extends AbstractCELA implements Cloneable{
 		ClosedWorldReasoner rc = new ClosedWorldReasoner(ks);
 		rc.setReasonerComponent(baseReasoner);
 		rc.init();
+
 		
 		ClassLearningProblem lp = new ClassLearningProblem(rc);
 //		lp.setEquivalence(false);

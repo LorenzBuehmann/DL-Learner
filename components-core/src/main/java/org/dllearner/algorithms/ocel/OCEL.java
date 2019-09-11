@@ -367,8 +367,6 @@ public class OCEL extends AbstractCELA {
 		nrOfNegativeExamples = negativeExamples.size();
 
 		nrOfExamples = nrOfPositiveExamples + nrOfNegativeExamples;
-		baseURI = reasoner.getBaseURI();
-		prefixes = reasoner.getPrefixes();
 		// note: used concepts and roles do not need to be passed
 		// as argument, because it is sufficient to prepare the
 		// concept and role hierarchy accordingly

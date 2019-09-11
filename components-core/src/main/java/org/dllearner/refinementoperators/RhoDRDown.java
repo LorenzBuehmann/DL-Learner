@@ -356,7 +356,7 @@ public class RhoDRDown extends RefinementOperatorAdapter implements Component, C
 		// compute splits for time data properties
 		if (useTimeDatatypes) {
 			if(reasoner instanceof SPARQLReasoner
-					&& !((SPARQLReasoner)reasoner).isUseGenericSplitsCode()) {
+					&& !((SPARQLReasoner)reasoner).isUseGenericSplitsCode() || (reasoner instanceof CypherReasoner)) {
 				// TODO SPARQL support for splits
 				logger.warn("Time based Facet restrictions are not (yet) implemented for " + AnnComponentManager.getName(reasoner) + ", option ignored");
 			} else {

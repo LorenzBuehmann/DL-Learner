@@ -25,7 +25,10 @@ package org.dllearner.reasoning;
  *
  */
 public enum ReasonerType {
-	DIG, OWLAPI_FACT, OWLAPI_PELLET, OWLAPI_HERMIT, OWLAPI_FUZZY, OWLAPI_JFACT, CLOSED_WORLD_REASONER, SPARQL_NATIVE;
+	DIG,
+	OWLAPI_FACT, OWLAPI_PELLET, OWLAPI_HERMIT, OWLAPI_FUZZY, OWLAPI_JFACT,
+	CLOSED_WORLD_REASONER,
+	SPARQL_NATIVE, CYPHER;
 
 	/**
 	 * @return <code>true</code> if reasoner type is OWL API, otherwise <code>false</code>

@@ -1,4 +1,4 @@
-package org.dllearner.utilities;
+package org.dllearner.utilities.neo4j;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -71,9 +71,9 @@ public class OWLClassExpressionToCypherConverter extends OWLClassExpressionVisit
     }
 
     /**
-     * Enable/disable light weight inferecne by means of stored procedures contained in the
+     * Enable/disable light weight inference by means of stored procedures contained in the
      * Neosemantics plugin.
-     * @param useInference
+     * @param useInference whether to use inference or not
      */
     public void setUseInference(boolean useInference) {
         this.useInference = useInference;

@@ -26,12 +26,15 @@ public class NeoSemanticsPluginSettings {
     private String domainRel;
     private String rangeRel;
 
+    private boolean keepCustomDatatypes = false;
+
     private NeoSemanticsPluginSettings(String resourceLabel,
-                                      String classLabel,
-                                      String objectPropertyLabel,
-                                      String dataPropertyLabel,
-                                      String subClassOfRel, String subPropertyOfRel,
-                                      String domainRel, String rangeRel) {
+                                       String classLabel,
+                                       String objectPropertyLabel,
+                                       String dataPropertyLabel,
+                                       String subClassOfRel, String subPropertyOfRel,
+                                       String domainRel, String rangeRel,
+                                       boolean keepCustomDatatypes) {
         this.resourceLabel = resourceLabel;
         this.classLabel = classLabel;
         this.objectPropertyLabel = objectPropertyLabel;
@@ -40,6 +43,7 @@ public class NeoSemanticsPluginSettings {
         this.subPropertyOfRel = subPropertyOfRel;
         this.domainRel = domainRel;
         this.rangeRel = rangeRel;
+        this.keepCustomDatatypes = keepCustomDatatypes;
     }
 
     public String getResourceLabel() {
@@ -74,7 +78,9 @@ public class NeoSemanticsPluginSettings {
         return rangeRel;
     }
 
-
+    public boolean isKeepCustomDatatypes() {
+        return keepCustomDatatypes;
+    }
 
     public static class Builder {
 
@@ -86,6 +92,8 @@ public class NeoSemanticsPluginSettings {
         private String subPropertyOfRel = NeoSemanticsPluginSettings.DEFAULT_SUBPROPERTYOF_REL;
         private String domainRel = NeoSemanticsPluginSettings.DEFAULT_DOMAIN_REL;
         private String rangeRel = NeoSemanticsPluginSettings.DEFAULT_RANGE_REL;
+
+        private boolean keepCustomDatatypes = false;
 
         public org.dllearner.utilities.neo4j.NeoSemanticsPluginSettings.Builder setResourceLabel(String resourceLabel) {
             this.resourceLabel = resourceLabel;
@@ -127,8 +135,13 @@ public class NeoSemanticsPluginSettings {
             return this;
         }
 
+        public org.dllearner.utilities.neo4j.NeoSemanticsPluginSettings.Builder setKeepCustomDatatypes(boolean keepCustomDatatypes) {
+            this.keepCustomDatatypes = keepCustomDatatypes;
+            return this;
+        }
+
         NeoSemanticsPluginSettings build() {
-            return new NeoSemanticsPluginSettings(resourceLabel, classLabel, objectPropertyLabel, dataPropertyLabel, subClassOfRel, subPropertyOfRel, domainRel, rangeRel);
+            return new NeoSemanticsPluginSettings(resourceLabel, classLabel, objectPropertyLabel, dataPropertyLabel, subClassOfRel, subPropertyOfRel, domainRel, rangeRel, keepCustomDatatypes);
         }
     }
 

@@ -1,12 +1,18 @@
 package org.dllearner.reasoning;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.clarkparsia.pellet.datatypes.types.datetime.XSDDate;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Streams;
+import org.apache.commons.lang.StringUtils;
 import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.XSD;
 import org.dllearner.algorithms.celoe.CELOE;
 import org.dllearner.core.AbstractReasonerComponent;
 import org.dllearner.core.ComponentAnn;
@@ -14,12 +20,13 @@ import org.dllearner.core.ComponentInitException;
 import org.dllearner.kb.Neo4JKS;
 import org.dllearner.learningproblems.ClassLearningProblem;
 import org.dllearner.refinementoperators.RhoDRDown;
-import org.dllearner.utilities.neo4j.NeoSemanticsPluginSettings;
+import org.dllearner.utilities.neo4j.Neo4jNeoSemanticsPluginSettings;
 import org.dllearner.utilities.neo4j.OWLClassExpressionToCypherConverter;
 import org.neo4j.driver.v1.*;
 import org.neo4j.driver.v1.types.Node;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
+import org.semanticweb.owlapi.vocab.OWL2Datatype;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static java.util.stream.Collectors.*;
@@ -50,17 +57,23 @@ public class CypherReasoner extends AbstractReasonerComponent {
     private final Neo4JKS ks;
     private Driver driver;
 
-    private NeoSemanticsPluginSettings ctx = NeoSemanticsPluginSettings.STANDARD;
+    private Neo4jNeoSemanticsPluginSettings ctx = Neo4jNeoSemanticsPluginSettings.STANDARD;
 
     private boolean useInference = false;
 
     public CypherReasoner(Neo4JKS ks) {
+        super(ks);
         this.ks = ks;
 
         driver = ks.getDriver();
     }
 
-    public void setNeoSemanticsPluginSettings(NeoSemanticsPluginSettings settings) {
+    /**
+     * Provide settings w.r.t. the NeoSemantics plugin configuration used when loading
+     * the OWL ontology and instance data into the Neo4J database.
+     * @param settings the settings object
+     */
+    public void setNeoSemanticsPluginSettings(Neo4jNeoSemanticsPluginSettings settings) {
         this.ctx = settings;
     }
 
@@ -115,6 +128,7 @@ public class CypherReasoner extends AbstractReasonerComponent {
 
     @Override
     public void init() throws ComponentInitException {
+        // we have to update all queries here based on the NeoSemantics plugin settings
         updateQueryTemplates();
     }
 
@@ -632,6 +646,9 @@ public class CypherReasoner extends AbstractReasonerComponent {
         }
     }
 
+    /*
+     Convert a Value object to an OWL literal
+     */
     private SortedSet<OWLLiteral> asOWLLiterals(Value value) {
         List<Object> objects = value.asObject() instanceof List
                                     ? value.asList()
@@ -644,15 +661,36 @@ public class CypherReasoner extends AbstractReasonerComponent {
             } else if (o instanceof Float) {
                 lit = df.getOWLLiteral((Float) o);
             } else if (o instanceof String) {
-                lit = df.getOWLLiteral((String) o);
+                String s = (String) o;
+
+                if(ctx.isKeepCustomDatatypes()) {
+                    String[] split = StringUtils.splitByWholeSeparator(s, "^^");
+                    if(split.length == 2) {
+                        String dtStr = split[1];
+                        OWLDatatype dt = df.getOWLDatatype(IRI.create(dtStr));
+                        String val = split[0];
+
+                        lit = df.getOWLLiteral(val, dt);
+                    } else {
+                        lit = df.getOWLLiteral(s);
+                    }
+                } else {
+                    lit = df.getOWLLiteral(s);
+                }
             } else if (o instanceof Boolean) {
                 lit = df.getOWLLiteral((Boolean) o);
+            } else if (o instanceof LocalDate){
+                lit = df.getOWLLiteral(o.toString(), df.getOWLDatatype(IRI.create(XSD.date.getURI())));
+            } else if (o instanceof LocalTime){
+                lit = df.getOWLLiteral(o.toString(), df.getOWLDatatype(IRI.create(XSD.time.getURI())));
+            } else if (o instanceof LocalDateTime){
+                lit = df.getOWLLiteral(o.toString(), OWL2Datatype.XSD_DATE_TIME);
             } else {
                 return Optional.<OWLLiteral>empty();
             }
             return Optional.of(lit);
         }).flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
-                .collect(Collectors.toCollection(TreeSet::new));
+          .collect(Collectors.toCollection(TreeSet::new));
     }
 
     public static void main(String[] args) throws Exception {
@@ -716,30 +754,33 @@ public class CypherReasoner extends AbstractReasonerComponent {
 
             objectPropertyRelationships.forEach((k, v) -> System.out.println(k + ":" + v));
 
-            Map<OWLDataProperty, Set<OWLLiteral>> dataPropertyRelationships =
-                    reasoner.getDataPropertyRelationshipsImpl(df.getOWLNamedIndividual(IRI.create("http://ns.softwiki.de/req/LogEveryUserActivity")));
+//            Map<OWLDataProperty, Set<OWLLiteral>> dataPropertyRelationships =
+//                    reasoner.getDataPropertyRelationshipsImpl(df.getOWLNamedIndividual(IRI.create("http://ns.softwiki.de/req/LogEveryUserActivity")));
+//
+//            dataPropertyRelationships.forEach((k, v) -> System.out.println(k + ":" + v));
 
-            dataPropertyRelationships.forEach((k, v) -> System.out.println(k + ":" + v));
+
+                    reasoner.getDataPropertyRelationshipsImpl(df.getOWLNamedIndividual(IRI.create("http://dbpedia.org/resource/Allan_Dwan"))).forEach((k, v) -> System.out.println(k + ":" + v));
 
 
-            ClassLearningProblem lp = new ClassLearningProblem(reasoner);
-            lp.setClassToDescribe(df.getOWLClass(IRI.create("http://ns.softwiki.de/req/CustomerRequirement")));
-            lp.init();
-
-            RhoDRDown op = new RhoDRDown();
-            op.setReasoner(reasoner);
-            op.setUseNegation(false);
-            op.setUseHasValueConstructor(false);
-            op.setUseCardinalityRestrictions(false);
-            op.setUseExistsConstructor(true);
-            op.setUseAllConstructor(false);
-            op.init();
-
-            CELOE alg = new CELOE(lp, reasoner);
-            alg.setMaxExecutionTimeInSeconds(10);
-            alg.setOperator(op);
-            alg.setWriteSearchTree(true);
-            alg.init();
+//            ClassLearningProblem lp = new ClassLearningProblem(reasoner);
+//            lp.setClassToDescribe(df.getOWLClass(IRI.create("http://ns.softwiki.de/req/CustomerRequirement")));
+//            lp.init();
+//
+//            RhoDRDown op = new RhoDRDown();
+//            op.setReasoner(reasoner);
+//            op.setUseNegation(false);
+//            op.setUseHasValueConstructor(false);
+//            op.setUseCardinalityRestrictions(false);
+//            op.setUseExistsConstructor(true);
+//            op.setUseAllConstructor(false);
+//            op.init();
+//
+//            CELOE alg = new CELOE(lp, reasoner);
+//            alg.setMaxExecutionTimeInSeconds(10);
+//            alg.setOperator(op);
+//            alg.setWriteSearchTree(true);
+//            alg.init();
 
 //            alg.start();
 
